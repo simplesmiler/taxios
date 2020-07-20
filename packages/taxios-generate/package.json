@@ -1,0 +1,25 @@
+{
+  "name": "@simplesmiler/taxios-generate",
+  "version": "0.1.0",
+  "description": "Typed wrapper around axios",
+  "keywords": [
+    "typescript",
+    "types",
+    "typed",
+    "axios"
+  ],
+  "author": "Denis Karabaza <denis.karabaza@gmail.com>",
+  "homepage": "https://github.com/simplesmiler/taxios/packages/taxios-generate",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/simplesmiler/taxios.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/simplesmiler/taxios/issues"
+  }
+}
