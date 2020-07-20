@@ -1,3 +1,0 @@
-function index() {
-  // TODO
-}

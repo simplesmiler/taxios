@@ -3,7 +3,11 @@
   "private": true,
   "scripts": {
     "lint": "prettier --check . && eslint --ext .ts .",
-    "lint:fix": "prettier --write . && eslint --fix --ext .ts,.js ."
+    "lint:fix": "prettier --write . && eslint --fix --ext .ts,.js .",
+    "bootstrap": "lerna bootstrap",
+    "clean": "lerna run clean",
+    "build": "lerna run build",
+    "publish": "lerna publish"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^3.7.0",

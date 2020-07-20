@@ -17,7 +17,13 @@
     "url": "git+ssh://git@github.com/simplesmiler/taxios.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "build": "npm run clean && npm run compile",
+    "clean": "shx rm -rf ./dist",
+    "compile": "tsc -p tsconfig.build.json"
+  },
+  "devDependencies": {
+    "typescript": "^3.9.7",
+    "shx": "^0.3.2"
   },
   "bugs": {
     "url": "https://github.com/simplesmiler/taxios/issues"

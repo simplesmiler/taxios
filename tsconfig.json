@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@simplesmiler/taxios": ["packages/taxios/src"],
+      "@simplesmiler/taxios-generate": ["packages/taxios-generate/src"]
+    },
+    "esModuleInterop": true
+  }
+}
