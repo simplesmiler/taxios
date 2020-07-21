@@ -11,7 +11,7 @@
   "author": "Denis Karabaza <denis.karabaza@gmail.com>",
   "homepage": "https://github.com/simplesmiler/taxios/packages/taxios",
   "license": "ISC",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/simplesmiler/taxios.git"
@@ -20,6 +20,11 @@
     "build": "npm run clean && npm run compile",
     "clean": "shx rm -rf ./dist",
     "compile": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "type-fest": "^0.16.0",
+    "qs": "^6.9.4"
   },
   "devDependencies": {
     "typescript": "^3.9.7",

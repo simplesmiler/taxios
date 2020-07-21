@@ -5,7 +5,6 @@
     "lint": "prettier --check . && eslint --ext .ts .",
     "lint:fix": "prettier --write . && eslint --fix --ext .ts,.js .",
     "bootstrap": "lerna bootstrap",
-    "clean": "lerna run clean",
     "build": "lerna run build",
     "publish": "lerna publish"
   },

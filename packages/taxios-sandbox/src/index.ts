@@ -1,0 +1,22 @@
+import Axios from 'axios';
+import { Taxios } from '@simplesmiler/taxios';
+import { PetStore } from './generated/PetStore';
+
+async function main(): Promise<number> {
+  const axios = Axios.create({ baseURL: 'https://petstore.swagger.io/v2' });
+  const taxios = new Taxios<PetStore>(axios);
+  const { data: pet } = await taxios.get('/pet/{petId}', {
+    params: { petId: 1 },
+  });
+  console.log(pet);
+  return 0;
+}
+
+main()
+  .then(function (code) {
+    process.exit(code);
+  })
+  .catch(function (err) {
+    console.error(err);
+    process.exit(1);
+  });

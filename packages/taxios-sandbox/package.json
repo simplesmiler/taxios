@@ -1,0 +1,26 @@
+{
+  "name": "@simplesmiler/taxios-sandbox",
+  "private": true,
+  "author": "Denis Karabaza <denis.karabaza@gmail.com>",
+  "homepage": "https://github.com/simplesmiler/taxios/packages/taxios-sandbox",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/simplesmiler/taxios.git"
+  },
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "generate": "taxios-generate https://petstore.swagger.io/v2/swagger.json -o ./src/generated/PetStore.ts -e PetStore"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "@simplesmiler/taxios": "^0.1.0",
+    "@simplesmiler/taxios-generate": "^0.1.0",
+    "typescript": "^3.9.7",
+    "shx": "^0.3.2",
+    "ts-node": "^8.10.2"
+  },
+  "bugs": {
+    "url": "https://github.com/simplesmiler/taxios/issues"
+  }
+}
