@@ -89,8 +89,8 @@ type Url<TApi extends Scheme, TMethod extends Method, TRoute extends AvailableRo
 >;
 
 type LaxConfig = {
-  params?: any;
-  query?: any;
+  params?: { [key in string]: any };
+  query?: { [key in string]: any };
 };
 
 type RequestConfig<TApi extends Scheme, TMethod extends Method, TRoute extends AvailableRoutes<TApi, TMethod>> = Config<
