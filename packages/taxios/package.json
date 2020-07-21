@@ -8,6 +8,9 @@
     "typed",
     "axios"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "Denis Karabaza <denis.karabaza@gmail.com>",
   "homepage": "https://github.com/simplesmiler/taxios/packages/taxios",
   "license": "ISC",
@@ -23,14 +26,15 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
-    "type-fest": "^0.16.0",
-    "qs": "^6.9.4"
+    "qs": "^6.9.4",
+    "type-fest": "^0.16.0"
   },
   "devDependencies": {
-    "typescript": "^3.9.7",
-    "shx": "^0.3.2"
+    "shx": "^0.3.2",
+    "typescript": "^3.9.7"
   },
   "bugs": {
     "url": "https://github.com/simplesmiler/taxios/issues"
-  }
+  },
+  "gitHead": "d94ed5bbc537494d69d475de4e88321f6b1194c4"
 }
