@@ -160,7 +160,7 @@ async function main(): Promise<number> {
     properties: [
       {
         name: 'version',
-        type: "'1'",
+        type: writer => writer.quote('1'),
       },
     ],
   });
@@ -262,6 +262,7 @@ async function main(): Promise<number> {
                         const mediaTypeObject = http200.content;
                         if (mediaTypeObject) {
                           // @TODO: This is flaky, what if request body has multiple media types?
+                          // @TODO: Add textual media types
                           const jsonMediaType = maybe(mediaTypeObject['application/json']);
                           if (jsonMediaType) {
                             const schema = jsonMediaType.schema;
@@ -271,7 +272,11 @@ async function main(): Promise<number> {
                             const rawTsType = await schemaToRawTsType(project, schema, exportName);
                             operationProperties.push({ name: 'response', type: rawTsType, hasQuestionToken: false });
                           } else {
-                            throw new Error(`Unexpected situation, unknown media type for response body of ${route}`);
+                            operationProperties.push({ name: 'response', type: 'ArrayBuffer' });
+                            operationProperties.push({
+                              name: 'responseType',
+                              type: (writer) => writer.quote('arraybuffer'),
+                            });
                           }
                         }
                       }
