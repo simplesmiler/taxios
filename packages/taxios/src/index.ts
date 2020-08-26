@@ -154,6 +154,15 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
     return this;
   }
 
+  url<TMethod extends Method, TRoute extends AvailableRoutes<TApi, TMethod>>(
+    method: TMethod,
+    route: TRoute,
+    ...args: InferredUrlArgs<TApi, TMethod, TRoute, TStrict>
+  ): Url<TApi, TMethod, TRoute> {
+    const [url] = this.prepare(method, route, ...args);
+    return url;
+  }
+
   // @TODO: Cover with tests
   // @TODO: https://swagger.io/docs/specification/serialization/
   protected prepare<TMethod extends Method, TRoute extends AvailableRoutes<TApi, TMethod>>(
