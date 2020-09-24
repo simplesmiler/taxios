@@ -26,13 +26,16 @@
     "compile": "tsc -p tsconfig.build.json"
   },
   "dependencies": {
-    "axios": "^0.19.2",
     "qs": "^6.9.4",
     "type-fest": "^0.16.0"
   },
+  "peerDependencies": {
+    "axios": "^0.19.2 || ^0.20.0"
+  },
   "devDependencies": {
     "shx": "^0.3.2",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.7",
+    "axios": "^0.20.0"
   },
   "bugs": {
     "url": "https://github.com/simplesmiler/taxios/issues"
