@@ -1,6 +1,7 @@
 # Dev artifacts
-/**/dist
+/packages/**/dist
+/packages/**/package-lock.json
+
 /**/lerna-debug.log
 /**/node_modules
 /**/npm-debug.log
-/**/package-lock.json
