@@ -80,8 +80,9 @@ export type Body<TApi extends Scheme, TMethod extends Method, TRoute extends Ava
 export type Response<
   TApi extends Scheme,
   TMethod extends Method,
-  TRoute extends AvailableRoutes<TApi, TMethod>
-> = EverOr<FieldLut<TApi, TMethod, TRoute, 'response'>, undefined>;
+  TRoute extends AvailableRoutes<TApi, TMethod>,
+  TStrict
+> = TStrict extends true ? EverOr<FieldLut<TApi, TMethod, TRoute, 'response'>, undefined> : any;
 
 type Url<TApi extends Scheme, TMethod extends Method, TRoute extends AvailableRoutes<TApi, TMethod>> = Opaque<
   string,
@@ -201,7 +202,7 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
   async get<TRoute extends AvailableRoutes<TApi, 'GET'>>(
     route: InferredRouteArg<TRoute, TStrict>,
     ...args: InferredRequestArgs<TApi, 'GET', TRoute, TStrict>
-  ): Promise<AxiosResponse<Response<TApi, 'GET', TRoute>>> {
+  ): Promise<AxiosResponse<Response<TApi, 'GET', TRoute, TStrict>>> {
     const [url, axiosConfig] = this.prepare('GET', route, ...args);
     return await this.axios.get(url, axiosConfig);
   }
@@ -209,7 +210,7 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
   async $get<TRoute extends AvailableRoutes<TApi, 'GET'>>(
     route: InferredRouteArg<TRoute, TStrict>,
     ...args: InferredRequestArgs<TApi, 'GET', TRoute, TStrict>
-  ): Promise<Response<TApi, 'GET', TRoute>> {
+  ): Promise<Response<TApi, 'GET', TRoute, TStrict>> {
     const [url, axiosConfig] = this.prepare('GET', route, ...args);
     return await this.axios.get(url, axiosConfig).then((response) => response.data);
   }
@@ -217,7 +218,7 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
   async head<TRoute extends AvailableRoutes<TApi, 'HEAD'>>(
     route: InferredRouteArg<TRoute, TStrict>,
     ...args: InferredRequestArgs<TApi, 'HEAD', TRoute, TStrict>
-  ): Promise<AxiosResponse<Response<TApi, 'HEAD', TRoute>>> {
+  ): Promise<AxiosResponse<Response<TApi, 'HEAD', TRoute, TStrict>>> {
     const [url, axiosConfig] = this.prepare('HEAD', route, ...args);
     return await this.axios.head(url, axiosConfig);
   }
@@ -225,7 +226,7 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
   async $head<TRoute extends AvailableRoutes<TApi, 'HEAD'>>(
     route: InferredRouteArg<TRoute, TStrict>,
     ...args: InferredRequestArgs<TApi, 'HEAD', TRoute, TStrict>
-  ): Promise<Response<TApi, 'HEAD', TRoute>> {
+  ): Promise<Response<TApi, 'HEAD', TRoute, TStrict>> {
     const [url, axiosConfig] = this.prepare('HEAD', route, ...args);
     return await this.axios.head(url, axiosConfig).then((response) => response.data);
   }
@@ -233,7 +234,7 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
   async post<TRoute extends AvailableRoutes<TApi, 'POST'>>(
     route: InferredRouteArg<TRoute, TStrict>,
     ...args: InferredRequestArgs<TApi, 'POST', TRoute, TStrict>
-  ): Promise<AxiosResponse<Response<TApi, 'POST', TRoute>>> {
+  ): Promise<AxiosResponse<Response<TApi, 'POST', TRoute, TStrict>>> {
     const [body, config] = args;
     const prepareArgs = [config] as InferredUrlArgs<TApi, 'POST', TRoute, TStrict>;
     const [url, axiosConfig] = this.prepare('POST', route, ...prepareArgs);
@@ -243,7 +244,7 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
   async $post<TRoute extends AvailableRoutes<TApi, 'POST'>>(
     route: InferredRouteArg<TRoute, TStrict>,
     ...args: InferredRequestArgs<TApi, 'POST', TRoute, TStrict>
-  ): Promise<Response<TApi, 'POST', TRoute>> {
+  ): Promise<Response<TApi, 'POST', TRoute, TStrict>> {
     const [body, config] = args;
     const prepareArgs = [config] as InferredUrlArgs<TApi, 'POST', TRoute, TStrict>;
     const [url, axiosConfig] = this.prepare('POST', route, ...prepareArgs);
@@ -253,7 +254,7 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
   async put<TRoute extends AvailableRoutes<TApi, 'PUT'>>(
     route: InferredRouteArg<TRoute, TStrict>,
     ...args: InferredRequestArgs<TApi, 'PUT', TRoute, TStrict>
-  ): Promise<AxiosResponse<Response<TApi, 'PUT', TRoute>>> {
+  ): Promise<AxiosResponse<Response<TApi, 'PUT', TRoute, TStrict>>> {
     const [body, config] = args;
     const prepareArgs = [config] as InferredUrlArgs<TApi, 'PUT', TRoute, TStrict>;
     const [url, axiosConfig] = this.prepare('PUT', route, ...prepareArgs);
@@ -263,7 +264,7 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
   async $put<TRoute extends AvailableRoutes<TApi, 'PUT'>>(
     route: InferredRouteArg<TRoute, TStrict>,
     ...args: InferredRequestArgs<TApi, 'PUT', TRoute, TStrict>
-  ): Promise<Response<TApi, 'PUT', TRoute>> {
+  ): Promise<Response<TApi, 'PUT', TRoute, TStrict>> {
     const [body, config] = args;
     const prepareArgs = [config] as InferredUrlArgs<TApi, 'PUT', TRoute, TStrict>;
     const [url, axiosConfig] = this.prepare('PUT', route, ...prepareArgs);
@@ -273,7 +274,7 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
   async delete<TRoute extends AvailableRoutes<TApi, 'DELETE'>>(
     route: InferredRouteArg<TRoute, TStrict>,
     ...args: InferredRequestArgs<TApi, 'DELETE', TRoute, TStrict>
-  ): Promise<AxiosResponse<Response<TApi, 'DELETE', TRoute>>> {
+  ): Promise<AxiosResponse<Response<TApi, 'DELETE', TRoute, TStrict>>> {
     const [url, axiosConfig] = this.prepare('DELETE', route, ...args);
     return await this.axios.delete(url, axiosConfig);
   }
@@ -281,7 +282,7 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
   async $delete<TRoute extends AvailableRoutes<TApi, 'DELETE'>>(
     route: InferredRouteArg<TRoute, TStrict>,
     ...args: InferredRequestArgs<TApi, 'DELETE', TRoute, TStrict>
-  ): Promise<Response<TApi, 'DELETE', TRoute>> {
+  ): Promise<Response<TApi, 'DELETE', TRoute, TStrict>> {
     const [url, axiosConfig] = this.prepare('DELETE', route, ...args);
     return await this.axios.delete(url, axiosConfig).then((response) => response.data);
   }
@@ -289,7 +290,7 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
   async options<TRoute extends AvailableRoutes<TApi, 'OPTIONS'>>(
     route: InferredRouteArg<TRoute, TStrict>,
     ...args: InferredRequestArgs<TApi, 'OPTIONS', TRoute, TStrict>
-  ): Promise<AxiosResponse<Response<TApi, 'OPTIONS', TRoute>>> {
+  ): Promise<AxiosResponse<Response<TApi, 'OPTIONS', TRoute, TStrict>>> {
     const [url, axiosConfig] = this.prepare('OPTIONS', route, ...args);
     return await this.axios.options(url, axiosConfig);
   }
@@ -297,7 +298,7 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
   async $options<TRoute extends AvailableRoutes<TApi, 'OPTIONS'>>(
     route: InferredRouteArg<TRoute, TStrict>,
     ...args: InferredRequestArgs<TApi, 'OPTIONS', TRoute, TStrict>
-  ): Promise<Response<TApi, 'OPTIONS', TRoute>> {
+  ): Promise<Response<TApi, 'OPTIONS', TRoute, TStrict>> {
     const [url, axiosConfig] = this.prepare('OPTIONS', route, ...args);
     return await this.axios.options(url, axiosConfig).then((response) => response.data);
   }
@@ -305,7 +306,7 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
   async patch<TRoute extends AvailableRoutes<TApi, 'PATCH'>>(
     route: InferredRouteArg<TRoute, TStrict>,
     ...args: InferredRequestArgs<TApi, 'PATCH', TRoute, TStrict>
-  ): Promise<AxiosResponse<Response<TApi, 'PATCH', TRoute>>> {
+  ): Promise<AxiosResponse<Response<TApi, 'PATCH', TRoute, TStrict>>> {
     const [body, config] = args;
     const prepareArgs = [config] as InferredUrlArgs<TApi, 'PATCH', TRoute, TStrict>;
     const [url, axiosConfig] = this.prepare('PATCH', route, ...prepareArgs);
@@ -315,7 +316,7 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
   async $patch<TRoute extends AvailableRoutes<TApi, 'PATCH'>>(
     route: InferredRouteArg<TRoute, TStrict>,
     ...args: InferredRequestArgs<TApi, 'PATCH', TRoute, TStrict>
-  ): Promise<Response<TApi, 'PATCH', TRoute>> {
+  ): Promise<Response<TApi, 'PATCH', TRoute, TStrict>> {
     const [body, config] = args;
     const prepareArgs = [config] as InferredUrlArgs<TApi, 'PATCH', TRoute, TStrict>;
     const [url, axiosConfig] = this.prepare('PATCH', route, ...prepareArgs);
