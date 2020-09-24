@@ -1,6 +1,6 @@
 {
   "name": "@simplesmiler/taxios",
-  "version": "0.1.7",
+  "version": "0.2.0-alpha.0",
   "description": "Typed wrapper around axios",
   "keywords": [
     "typescript",
@@ -33,9 +33,9 @@
     "axios": "^0.19.2 || ^0.20.0"
   },
   "devDependencies": {
+    "axios": "^0.20.0",
     "shx": "^0.3.2",
-    "typescript": "^3.9.7",
-    "axios": "^0.20.0"
+    "typescript": "^3.9.7"
   },
   "bugs": {
     "url": "https://github.com/simplesmiler/taxios/issues"
