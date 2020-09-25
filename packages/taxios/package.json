@@ -1,6 +1,6 @@
 {
   "name": "@simplesmiler/taxios",
-  "version": "0.1.7",
+  "version": "0.2.0-alpha.2",
   "description": "Typed wrapper around axios",
   "keywords": [
     "typescript",
@@ -26,11 +26,14 @@
     "compile": "tsc -p tsconfig.build.json"
   },
   "dependencies": {
-    "axios": "^0.19.2",
     "qs": "^6.9.4",
     "type-fest": "^0.16.0"
   },
+  "peerDependencies": {
+    "axios": "^0.19.2 || ^0.20.0"
+  },
   "devDependencies": {
+    "axios": "^0.20.0",
     "shx": "^0.3.2",
     "typescript": "^3.9.7"
   },

@@ -13,7 +13,7 @@
     "generate": "taxios-generate https://petstore.swagger.io/v2/swagger.json -o ./src/generated/PetStore.ts -e PetStore"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.20.0",
     "@simplesmiler/taxios": "^0.1.0",
     "@simplesmiler/taxios-generate": "^0.1.0",
     "typescript": "^3.9.7",
