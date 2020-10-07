@@ -183,7 +183,7 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
       }
       const rawQuery = rawConfig.query;
       if (rawQuery) {
-        urlString += qs.stringify(rawQuery);
+        urlString += '?' + qs.stringify(rawQuery);
       }
       const rawAxiosConfig = rawConfig.axios;
       if (rawAxiosConfig) {
