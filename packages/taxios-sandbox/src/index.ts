@@ -5,10 +5,15 @@ import { PetStore } from './generated/PetStore';
 async function main(): Promise<number> {
   const axios = Axios.create({ baseURL: 'https://petstore.swagger.io/v2' });
   const taxios = new Taxios<PetStore>(axios);
+  //
+  const url = taxios.url('GET', '/pet/{petId}', { params: { petId: 1 } });
+  console.log(url);
+  //
   const { data: pet } = await taxios.get('/pet/{petId}', {
     params: { petId: 1 },
   });
   console.log(pet);
+  //
   return 0;
 }
 

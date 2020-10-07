@@ -3,6 +3,7 @@ import qs from 'qs';
 import { ConditionalKeys, Opaque } from 'type-fest';
 
 import { interpolateParams } from './interpolate-params';
+import urljoin from 'url-join';
 
 // @NOTE: [never] instead of never, see https://github.com/microsoft/TypeScript/issues/23182#issuecomment-379091887
 type EverOr<A, B> = [A] extends [never] ? B : A;
@@ -162,7 +163,11 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
     route: InferredRouteArg<TRoute, TStrict>,
     ...args: InferredUrlArgs<TApi, TMethod, TRoute, TStrict>
   ): Url<TApi, TMethod, TRoute> {
-    const [url] = this.prepare(method, route, ...args);
+    let [url] = this.prepare(method, route, ...args);
+    const baseUrl = this.axios.defaults.baseURL;
+    if (baseUrl) {
+      url = urljoin(baseUrl, url) as Opaque<string, [TApi, TMethod, TRoute]>;
+    }
     return url;
   }
 
