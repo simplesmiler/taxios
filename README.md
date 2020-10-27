@@ -27,7 +27,7 @@ import { Taxios } from '@simplesmiler/taxios';
 import { PetStore } from './PetStore';
 
 // Create axios client and taxios wrapper
-const taxios = new Taxios<PetStore>(axios.create({ baseUrl: 'https://petstore.swagger.io/v2' }));
+const taxios = new Taxios<PetStore>(axios.create({ baseURL: 'https://petstore.swagger.io/v2' }));
 
 // Make request
 const pet = await taxios.get('/pet/{petId}', { params: { petId: 1 } });

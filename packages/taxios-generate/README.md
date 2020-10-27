@@ -32,7 +32,7 @@ import axios from 'axios';
 import { Taxios } from '@simplesmiler/taxios';
 import { PetStore } from './PetStore';
 
-const taxios = new Taxios<PetStore>(axios.create({ baseUrl: 'https://petstore.swagger.io/v2' }));
+const taxios = new Taxios<PetStore>(axios.create({ baseURL: 'https://petstore.swagger.io/v2' }));
 const pet = await taxios.get('/pet/{petId}', { params: { petId: 1 } });
 ```
 

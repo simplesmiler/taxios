@@ -12,7 +12,7 @@ Example typings: [PetStore.ts](https://github.com/simplesmiler/taxios/blob/maste
 import axios from 'axios';
 import { Taxios } from '@simplesmiler/taxios';
 import { PetStore } from './PetStore';
-const taxios = new Taxios<PetStore>(axios.create({ baseUrl: 'https://petstore.swagger.io/v2' }));
+const taxios = new Taxios<PetStore>(axios.create({ baseURL: 'https://petstore.swagger.io/v2' }));
 ```
 
 ```ts
@@ -43,7 +43,7 @@ await taxios.<method>(url, body, config); // For methods with body, like POST an
   // Query string params, e.g. { status: ['sold', 'pending'] } for /api/pets/findByStatus?status=sold,pending
   query: { key: value },
   //
-  // The rest of axios config, if you need it, e.g. { headers: { 'X-Visitor-Id': 1 } } 
+  // The rest of axios config, if you need it, e.g. { headers: { 'X-Visitor-Id': 1 } }
   axios: { ... },
 };
 ```
