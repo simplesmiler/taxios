@@ -215,7 +215,7 @@ async function main(): Promise<number> {
             }
           }
         }
-        const rawSchemaInterface = await compile(jsonSchema, name, { bannerComment: '' });
+        const rawSchemaInterface = await compile(jsonSchema, name, { bannerComment: '', enableConstEnums: false });
         targetNamespace.addStatements((writer) => {
           writer.write(rawSchemaInterface);
         });

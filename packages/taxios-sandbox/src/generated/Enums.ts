@@ -1,14 +1,14 @@
 export namespace Enum {
-  export const enum OrderStatus {
+  export enum OrderStatus {
     Placed = 'Placed',
     Approved = 'Approved',
     Delivered = 'Delivered',
   }
-  export const enum StatusCode {
+  export enum StatusCode {
     Ok = 200,
     BadRequest = 400,
   }
-  export const enum NamedEnum {
+  export enum NamedEnum {
     $ = '$',
     _ = '_',
     a1 = 'a1',

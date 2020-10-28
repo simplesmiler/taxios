@@ -13,7 +13,7 @@ Options:
   -o, --out FILE           Write into this file
   -e, --export NAME        Export generated definition under this name
       --skip-validation    Skip strict schema validation
-      --named-enums        [0.2.3+] Generate named enums instead of union types when possible
+      --named-enums        [0.2.4+] Generate named enums instead of union types when possible
 ```
 
 ## Example
@@ -39,7 +39,7 @@ const pet = await taxios.get('/pet/{petId}', { params: { petId: 1 } });
 
 See [@simplesmiler/taxios](https://github.com/simplesmiler/taxios/tree/master/packages/taxios) package for details.
 
-## [0.2.3+] Union types and Named enums
+## [0.2.4+] Union types and Named enums
 
 > **WARNING**: The following only applies to "standalone" enums. Inline enums can only be expressed as inline union types.
 
@@ -52,7 +52,7 @@ components:
       enum: [Placed, Approved, Delivered]
 ```
 
-Prior to 0.2.3 `taxios-generate` would generate a union type:
+Prior to 0.2.4 `taxios-generate` would generate a union type:
 
 ```ts
 export namespace PetStore {
@@ -60,7 +60,7 @@ export namespace PetStore {
 }
 ```
 
-Since 0.2.3 you can use `--named-enums` option to generate a named enum instead:
+Since 0.2.4 you can use `--named-enums` option to generate a named enum instead:
 
 ```ts
 export namespace PetStore {
