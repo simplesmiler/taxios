@@ -5,7 +5,7 @@ import nodePath from 'path';
 import { OptionalKind, Project, PropertySignatureStructure, Writers } from 'ts-morph';
 import { cloneDeep } from 'lodash';
 import { compile } from 'json-schema-to-typescript';
-import { JSONSchema4 } from 'json-schema';
+import { JSONSchema4, JSONSchema4Type } from 'json-schema';
 import traverse from 'json-schema-traverse';
 import mkdirp from 'mkdirp';
 import minimist from 'minimist';
@@ -51,6 +51,39 @@ async function schemaToRawTsType(project: Project, schema: JSONSchema4, rootName
   return tsType;
 }
 
+const VALID_IDENTIFIER_REGEX = /^[$_\p{L}][$_\p{L}\p{N}]*$/u;
+function isValidJsIdentifier(name: unknown): boolean {
+  if (typeof name !== 'string') return false;
+  return VALID_IDENTIFIER_REGEX.test(name);
+}
+
+function parseEnumNameCandidates(
+  path: string,
+  values: JSONSchema4Type[],
+  field: string,
+  candidates: unknown,
+): string[] | null {
+  if (!candidates) return null;
+  if (!Array.isArray(candidates)) {
+    console.warn(
+      `Warning: Ignoring ${field} of ${path} because it does not look valid, should be a list of valid identifiers`,
+    );
+    return null;
+  }
+  const hasBadCandidates = !candidates.every(isValidJsIdentifier);
+  if (hasBadCandidates) {
+    console.warn(`Warning: Ignoring ${field} of ${path} because some values are not valid identifiers`);
+    return null;
+  }
+  if (candidates.length !== values.length) {
+    console.warn(
+      `Warning: Ignoring ${field} of ${path} because number of names does not correspond to number of values`,
+    );
+    return null;
+  }
+  return candidates as string[];
+}
+
 async function main(): Promise<number> {
   // @SECTION:
   const args = process.argv.slice(2);
@@ -63,7 +96,7 @@ async function main(): Promise<number> {
   };
   const argv = minimist<Argv>(args, {
     string: ['out', 'export'],
-    boolean: ['skip-validation', 'help', 'version'],
+    boolean: ['skip-validation', 'named-enums', 'help', 'version'],
     alias: {
       out: ['o'],
       export: ['e'],
@@ -74,6 +107,7 @@ async function main(): Promise<number> {
       help: false,
       version: false,
       'skip-validate': false,
+      'named-enums': false,
     },
   });
   if (argv.help) {
@@ -88,6 +122,7 @@ async function main(): Promise<number> {
         '  -o, --out FILE           Write into this file',
         '  -e, --export NAME        Export generated definition under this name',
         '      --skip-validation    Skip strict schema validation',
+        '      --named-enums        Generate named enums instead of union types when possible',
         '  -v, --version            Print version',
       ].join('\n'),
     );
@@ -102,6 +137,7 @@ async function main(): Promise<number> {
   const inputPath = maybe(argv._[0]);
   const outputPath = argv.out;
   const validate = !argv['skip-validation'];
+  const namedEnums = argv['named-enums'];
   //
   if (!inputPath || argv._.length > 1) {
     console.error('You have to specify a single input file or url');
@@ -135,6 +171,7 @@ async function main(): Promise<number> {
           namespaceNames.splice(0, 1);
         }
         const name = nameParts[nameParts.length - 1];
+        const path = `#/components/schemas/${name}`;
 
         let targetNamespace = rootNamespace;
         for (const namespaceName of namespaceNames) {
@@ -145,6 +182,39 @@ async function main(): Promise<number> {
 
         const jsonSchema = cloneDeep(schema) as JSONSchema4;
         replaceRefsWithTsTypes(jsonSchema, '#/components/schemas/', exportName);
+        if (namedEnums) {
+          const enumValues = jsonSchema.enum;
+          if (enumValues) {
+            let tsEnumNames: string[] | null = null;
+            if (jsonSchema.tsEnumNames) {
+              const candidates = parseEnumNameCandidates(path, enumValues, 'tsEnumNames', jsonSchema.tsEnumNames);
+              delete jsonSchema.tsEnumNames;
+              if (candidates) tsEnumNames = candidates;
+            }
+            if (!tsEnumNames && jsonSchema['x-enumNames']) {
+              const candidates = parseEnumNameCandidates(path, enumValues, 'x-enumNames', jsonSchema['x-enumNames']);
+              if (candidates) tsEnumNames = candidates;
+            }
+            if (!tsEnumNames) {
+              const candidates = enumValues;
+              const noBadCandidates = candidates.every(isValidJsIdentifier);
+              if (noBadCandidates) {
+                tsEnumNames = candidates as string[];
+              } else {
+                console.warn(
+                  `Warning: Can not use values of ${path} as enum member names because some of them are not valid identifiers`,
+                );
+              }
+            }
+            if (tsEnumNames) {
+              jsonSchema.tsEnumNames = tsEnumNames;
+            } else {
+              console.warn(
+                `Warning: Enum ${path} will be generated as union type because no valid names are available`,
+              );
+            }
+          }
+        }
         const rawSchemaInterface = await compile(jsonSchema, name, { bannerComment: '' });
         targetNamespace.addStatements((writer) => {
           writer.write(rawSchemaInterface);

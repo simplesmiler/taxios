@@ -10,7 +10,8 @@
   },
   "scripts": {
     "start": "ts-node src/index.ts",
-    "generate": "taxios-generate https://petstore.swagger.io/v2/swagger.json -o ./src/generated/PetStore.ts -e PetStore"
+    "generate:petstore": "taxios-generate https://petstore.swagger.io/v2/swagger.json -o ./src/generated/PetStore.ts -e PetStore --named-enums",
+    "generate:enums": "taxios-generate ./src/enums.yml -o ./src/generated/Enums.ts -e Enum --named-enums"
   },
   "dependencies": {
     "axios": "^0.20.0",

@@ -1,0 +1,38 @@
+openapi: 3.0.0
+info:
+  title: Enums
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /v1/roles:
+    get:
+      operationId: getRoles
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    OrderStatus:
+      type: string
+      enum: [Placed, Approved, Delivered]
+    StatusCode:
+      enum: [ 200, 400 ]
+      x-enumNames: [ Ok, BadRequest ]
+    NamedEnum:
+      enum: [ $, _, a1, 'привет', '日本', 'null', delete ]
+    UnionType:
+      enum: [ '1', ' untrimmed ', '#', null, true, [1, 2] ]
+    RubiksCubeAlgorithm:
+      type: array
+      items:
+        type: object
+        additionalProperties: false
+        properties:
+          face:
+            enum: [F, R, U, L, B, D]
+          turns:
+            enum: [-1, 1, 2]
+        required:
+          - face
+          - turns
