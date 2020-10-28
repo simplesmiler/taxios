@@ -309,6 +309,10 @@ main()
     process.exit(code);
   })
   .catch((err) => {
-    console.error(err);
+    if (Object.prototype.hasOwnProperty.call(err, 'toJSON')) {
+      console.error(err.message, err.stack);
+    } else {
+      console.error(err);
+    }
     process.exit(1);
   });
