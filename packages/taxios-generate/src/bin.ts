@@ -160,7 +160,7 @@ async function main(): Promise<number> {
     properties: [
       {
         name: 'version',
-        type: writer => writer.quote('1'),
+        type: (writer) => writer.quote('1'),
       },
     ],
   });
