@@ -93,6 +93,7 @@ async function main(): Promise<number> {
     'skip-validation': boolean;
     help: boolean;
     version: boolean;
+    'named-enums': boolean;
   };
   const argv = minimist<Argv>(args, {
     string: ['out', 'export'],

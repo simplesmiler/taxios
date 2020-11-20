@@ -55,20 +55,16 @@ components:
 Prior to 0.2.4 `taxios-generate` would generate a union type:
 
 ```ts
-export namespace PetStore {
-  export type OrderStatus = 'Placed' | 'Approved' | 'Delivered';
-}
+export type OrderStatus = 'Placed' | 'Approved' | 'Delivered';
 ```
 
 Since 0.2.4 you can use `--named-enums` option to generate a named enum instead:
 
 ```ts
-export namespace PetStore {
-  export enum OrderStatus {
-    Placed = 'Placed',
-    Approved = 'Approved',
-    Delivered = 'Delivered',
-  }
+export enum OrderStatus {
+  Placed = 'Placed',
+  Approved = 'Approved',
+  Delivered = 'Delivered',
 }
 ```
 
