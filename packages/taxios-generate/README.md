@@ -116,4 +116,15 @@ export interface User {
 
 This option treats unspecified value of OpenAPI `additionalProperties` field as `false`.
 
-If `additionalProperties` is explicitly specified, then additional properties.
+If `additionalProperties` is explicitly given as `true`, then `[k: string]: unknown` will still be added.
+
+```yaml
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+      additionalProperties: true
+```
