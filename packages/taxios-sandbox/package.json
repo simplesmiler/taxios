@@ -10,8 +10,9 @@
   },
   "scripts": {
     "start": "ts-node src/index.ts",
-    "generate:petstore": "taxios-generate https://petstore.swagger.io/v2/swagger.json -o ./src/generated/PetStore.ts -e PetStore --named-enums",
-    "generate:named-enums": "taxios-generate ./src/named-enums.yml -o ./src/generated/NamedEnums.ts -e NamedEnums --named-enums"
+    "generate:petstore": "taxios-generate https://petstore.swagger.io/v2/swagger.json -o ./src/generated/PetStore.ts -e PetStore --named-enums --skip-additional-properties",
+    "generate:named-enums": "taxios-generate ./src/named-enums.yml -o ./src/generated/NamedEnums.ts -e NamedEnums --named-enums",
+    "generate:skip-additional-properties": "taxios-generate ./src/skip-additional-properties.yml -o ./src/generated/SkipAdditionalProperties.ts -e SkipAdditionalProperties --skip-additional-properties"
   },
   "dependencies": {
     "axios": "^0.20.0",

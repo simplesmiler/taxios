@@ -30,11 +30,27 @@ function replaceRefsWithTsTypes(tree: JSONSchema4, prefix: string, rootNamespace
   });
 }
 
+function placeExplicitAdditionalProperties(tree: JSONSchema4, defaultValue: boolean): void {
+  traverse(tree, (node: JSONSchema4) => {
+    if (node.type === 'object' && !Object.prototype.hasOwnProperty.call(node, 'additionalProperties')) {
+      node.additionalProperties = defaultValue;
+    }
+  });
+}
+
 // @TODO: Cover with tests
-async function schemaToRawTsType(project: Project, schema: JSONSchema4, rootNamespaceName: string): Promise<string> {
+async function schemaToRawTsType(
+  project: Project,
+  schema: JSONSchema4,
+  rootNamespaceName: string,
+  skipAdditionalProperties: boolean,
+): Promise<string> {
   // @NOTE: Wrap schema in object to force generator to produce type instead of interface
   const wrappedSchema = { type: 'object', properties: { target: cloneDeep(schema) } } as JSONSchema4;
   replaceRefsWithTsTypes(wrappedSchema, '#/components/schemas/', rootNamespaceName);
+  if (skipAdditionalProperties) {
+    placeExplicitAdditionalProperties(wrappedSchema, false);
+  }
 
   const rawSchemaInterface = await compile(wrappedSchema, 'Temp', { bannerComment: '' });
 
@@ -94,10 +110,11 @@ async function main(): Promise<number> {
     help: boolean;
     version: boolean;
     'named-enums': boolean;
+    'skip-additional-properties': boolean;
   };
   const argv = minimist<Argv>(args, {
     string: ['out', 'export'],
-    boolean: ['skip-validation', 'named-enums', 'help', 'version'],
+    boolean: ['skip-validation', 'named-enums', 'skip-additional-properties', 'help', 'version'],
     alias: {
       out: ['o'],
       export: ['e'],
@@ -109,6 +126,7 @@ async function main(): Promise<number> {
       version: false,
       'skip-validate': false,
       'named-enums': false,
+      'skip-additional-properties': false,
     },
   });
   if (argv.help) {
@@ -119,12 +137,13 @@ async function main(): Promise<number> {
         '',
         'Usage: taxios-generate [options] <input-file-or-url>',
         'Options:',
-        '  -h, --help               Print this message',
-        '  -o, --out FILE           Write into this file',
-        '  -e, --export NAME        Export generated definition under this name',
-        '      --skip-validation    Skip strict schema validation',
-        '      --named-enums        Generate named enums instead of union types when possible',
-        '  -v, --version            Print version',
+        '  -h, --help                        Print this message',
+        '  -o, --out FILE                    Write into this file',
+        '  -e, --export NAME                 Export generated definition under this name',
+        '      --skip-validation             Skip strict schema validation',
+        '      --named-enums                 Generate named enums instead of union types when possible',
+        '      --skip-additional-properties  Skip generating`[k: string]: unknown` for objects, unless explicitly asked', // @WIP: Document in other places
+        '  -v, --version                     Print version',
       ].join('\n'),
     );
     return 0;
@@ -139,6 +158,7 @@ async function main(): Promise<number> {
   const outputPath = argv.out;
   const validate = !argv['skip-validation'];
   const namedEnums = argv['named-enums'];
+  const skipAdditionalProperties = argv['skip-additional-properties'];
   //
   if (!inputPath || argv._.length > 1) {
     console.error('You have to specify a single input file or url');
@@ -183,6 +203,9 @@ async function main(): Promise<number> {
 
         const jsonSchema = cloneDeep(schema) as JSONSchema4;
         replaceRefsWithTsTypes(jsonSchema, '#/components/schemas/', exportName);
+        if (skipAdditionalProperties) {
+          placeExplicitAdditionalProperties(jsonSchema, false);
+        }
         if (namedEnums) {
           const enumValues = jsonSchema.enum;
           if (enumValues) {
@@ -267,7 +290,12 @@ async function main(): Promise<number> {
                         if (!schema) {
                           throw new Error(`Unexpected situation, schema for request body of ${route} is missing`);
                         }
-                        const rawTsType = await schemaToRawTsType(project, schema, exportName);
+                        const rawTsType = await schemaToRawTsType(
+                          project,
+                          schema,
+                          exportName,
+                          skipAdditionalProperties,
+                        );
                         operationProperties.push({ name: 'body', type: rawTsType, hasQuestionToken: !required });
                       } else {
                         throw new Error(`Unexpected situation, unknown media type for request body of ${route}`);
@@ -286,7 +314,12 @@ async function main(): Promise<number> {
                             `Unexpected situation, schema for parameter ${parameter.name} of ${route} is missing`,
                           );
                         }
-                        const rawTsType = await schemaToRawTsType(project, schema, exportName);
+                        const rawTsType = await schemaToRawTsType(
+                          project,
+                          schema,
+                          exportName,
+                          skipAdditionalProperties,
+                        );
                         paramProperties.push({
                           name: parameter.name,
                           type: rawTsType,
@@ -310,7 +343,12 @@ async function main(): Promise<number> {
                             `Unexpected situation, schema for parameter ${parameter.name} of ${route} is missing`,
                           );
                         }
-                        const rawTsType = await schemaToRawTsType(project, schema, exportName);
+                        const rawTsType = await schemaToRawTsType(
+                          project,
+                          schema,
+                          exportName,
+                          skipAdditionalProperties,
+                        );
                         paramProperties.push({
                           name: parameter.name,
                           type: rawTsType,
@@ -340,7 +378,12 @@ async function main(): Promise<number> {
                             if (!schema) {
                               throw new Error(`Unexpected situation, schema for response body of ${route} is missing`);
                             }
-                            const rawTsType = await schemaToRawTsType(project, schema, exportName);
+                            const rawTsType = await schemaToRawTsType(
+                              project,
+                              schema,
+                              exportName,
+                              skipAdditionalProperties,
+                            );
                             operationProperties.push({ name: 'response', type: rawTsType, hasQuestionToken: false });
                           } else {
                             operationProperties.push({ name: 'response', type: 'ArrayBuffer' });

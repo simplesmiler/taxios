@@ -1,0 +1,36 @@
+openapi: 3.0.0
+info:
+  title: Skip additional properties
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /v1/roles:
+    get:
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+    ImplicitSkip:
+      type: object
+      properties:
+        name:
+          type: string
+    ExplicitSkip:
+      type: object
+      properties:
+        name:
+          type: string
+      additionalProperties: false
+    ExplicitKeep:
+      type: object
+      properties:
+        name:
+          type: string
+      additionalProperties: true

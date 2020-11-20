@@ -10,10 +10,11 @@ taxios-generate [options] <input-file-or-url>
 
 ```
 Options:
-  -o, --out FILE           Write into this file
-  -e, --export NAME        Export generated definition under this name
-      --skip-validation    Skip strict schema validation
-      --named-enums        [0.2.4+] Generate named enums instead of union types when possible
+  -o, --out FILE                    Write into this file
+  -e, --export NAME                 Export generated definition under this name
+      --skip-validation             Skip strict schema validation
+      --named-enums                 [0.2.4+] Generate named enums instead of union types when possible
+      --skip-additional-properties  [0.2.5+] Skip generating`[k: string]: unknown` for objects, unless explicitly asked
 ```
 
 ## Example
@@ -81,3 +82,38 @@ components:
 ```
 
 If no valid names are available, `taxios-generate` will fallback to generating a union type.
+
+## [0.2.5+] Additional properties
+
+Look at the following OpenAPI snippet:
+
+```yaml
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+```
+
+Prior to 0.2.5 `taxios-generate` would generate an interface with explicitly allowed additional properties:
+
+```ts
+export interface User {
+  name?: string;
+  [k: string]: unknown;
+}
+```
+
+Since 0.2.5 you can use `--skip-additional-properties` option to generate an interface without then:
+
+```ts
+export interface User {
+  name?: string;
+}
+```
+
+This option treats unspecified value of OpenAPI `additionalProperties` field as `false`.
+
+If `additionalProperties` is explicitly specified, then additional properties.
