@@ -38,6 +38,18 @@ function placeExplicitAdditionalProperties(tree: JSONSchema4, defaultValue: bool
   });
 }
 
+// @DOC: The library generates titled inline types as standalone interfaces which we do not want.
+// @REFERENCE: https://github.com/bcherny/json-schema-to-typescript/issues/269
+// @REFERENCE: https://github.com/bcherny/json-schema-to-typescript/issues/181
+// @TODO: Maybe generate nested namespaces for titled inline types?
+function trimTypeTitles(tree: JSONSchema4): void {
+  traverse(tree, (node: JSONSchema4) => {
+    if (Object.prototype.hasOwnProperty.call(node, 'title')) {
+      delete node.title;
+    }
+  });
+}
+
 // @TODO: Cover with tests
 async function schemaToRawTsType(
   project: Project,
@@ -48,6 +60,7 @@ async function schemaToRawTsType(
   // @NOTE: Wrap schema in object to force generator to produce type instead of interface
   const wrappedSchema = { type: 'object', properties: { target: cloneDeep(schema) } } as JSONSchema4;
   replaceRefsWithTsTypes(wrappedSchema, '#/components/schemas/', rootNamespaceName);
+  trimTypeTitles(wrappedSchema);
   if (skipAdditionalProperties) {
     placeExplicitAdditionalProperties(wrappedSchema, false);
   }
@@ -203,6 +216,7 @@ async function main(): Promise<number> {
 
         const jsonSchema = cloneDeep(schema) as JSONSchema4;
         replaceRefsWithTsTypes(jsonSchema, '#/components/schemas/', exportName);
+        trimTypeTitles(jsonSchema);
         if (skipAdditionalProperties) {
           placeExplicitAdditionalProperties(jsonSchema, false);
         }
