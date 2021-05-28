@@ -1,0 +1,33 @@
+openapi: 3.0.0
+info:
+  title: Snake case example
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /v1/test:
+    get:
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    'not a valid identifier':
+      type: number
+    rubiks_cube_face:
+      enum: [f, r, u, l, b, d]
+    rubiks_cube_step:
+      type: object
+      additionalProperties: false
+      properties:
+        face:
+          $ref: '#/components/schemas/rubiks_cube_face'
+        turns:
+          enum: [-1, 1, 2]
+      required:
+        - face
+        - turns
+    rubiks_cube_algorithm:
+      type: array
+      items:
+        $ref: '#/components/schemas/rubiks_cube_step'

@@ -12,6 +12,7 @@
     "start": "ts-node src/index.ts",
     "generate:petstore": "taxios-generate https://petstore.swagger.io/v2/swagger.json -o ./src/generated/PetStore.ts -e PetStore --named-enums --skip-additional-properties",
     "generate:named-enums": "taxios-generate ./src/named-enums.yml -o ./src/generated/NamedEnums.ts -e NamedEnums --named-enums",
+    "generate:snake-case": "taxios-generate ./src/snake-case.yml -o ./src/generated/snake_case.ts -e snake_case --named-enums",
     "generate:skip-additional-properties": "taxios-generate ./src/skip-additional-properties.yml -o ./src/generated/SkipAdditionalProperties.ts -e SkipAdditionalProperties --skip-additional-properties"
   },
   "dependencies": {

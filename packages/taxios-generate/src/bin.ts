@@ -5,6 +5,7 @@ import nodePath from 'path';
 import { OptionalKind, Project, PropertySignatureStructure, Writers } from 'ts-morph';
 import { cloneDeep } from 'lodash';
 import { compile } from 'json-schema-to-typescript';
+import { toSafeString } from 'json-schema-to-typescript/dist/src/utils';
 import { JSONSchema4, JSONSchema4Type } from 'json-schema';
 import traverse from 'json-schema-traverse';
 import mkdirp from 'mkdirp';
@@ -19,9 +20,10 @@ function replaceRefsWithTsTypes(tree: JSONSchema4, prefix: string, rootNamespace
     if (node.$ref) {
       const ref = node.$ref;
       delete node.$ref;
-      node.tsType = ref.slice(prefix.length);
       const nameWithOpenApiNamespace = ref.slice(prefix.length);
-      const nameParts = nameWithOpenApiNamespace.split('.');
+      const nameParts = nameWithOpenApiNamespace
+        .split('.')
+        .map((part) => (isValidJsIdentifier(part) ? part : toSafeString(part)));
       if (nameParts[0] !== rootNamespaceName) {
         nameParts.unshift(rootNamespaceName);
       }
@@ -51,7 +53,7 @@ function trimTypeTitles(tree: JSONSchema4): void {
 }
 
 // @TODO: Cover with tests
-async function schemaToRawTsType(
+async function schemaToTsTypeExpression(
   project: Project,
   schema: JSONSchema4,
   rootNamespaceName: string,
@@ -65,19 +67,95 @@ async function schemaToRawTsType(
     placeExplicitAdditionalProperties(wrappedSchema, false);
   }
 
-  const rawSchemaInterface = await compile(wrappedSchema, 'Temp', { bannerComment: '' });
+  const rawTsWrappedInterface = await compile(wrappedSchema, 'Temp', { bannerComment: '' });
 
   // @TODO: Use some different way to generate typescript types from json schema,
   //        because using temporary files is meh
-  const tempFile = project.createSourceFile('temp.ts', rawSchemaInterface);
+  const tempFile = project.createSourceFile('temp.ts', rawTsWrappedInterface);
   const tsInterface = tempFile.getInterfaceOrThrow('Temp');
   const typeNode = tsInterface.getProperties()[0].getTypeNode();
   if (!typeNode) {
     throw new Error('Unexpected situation, did not find type node');
   }
-  const tsType = typeNode.getText();
+  const tsTypeExpression = typeNode.getText();
   project.removeSourceFile(tempFile);
-  return tsType;
+  return tsTypeExpression;
+}
+
+// @TODO: Cover with tests
+async function schemaToTsTypeDeclaration(
+  project: Project,
+  schema: JSONSchema4,
+  path: string,
+  name: string,
+  rootNamespaceName: string,
+  skipAdditionalProperties: boolean,
+  namedEnums: boolean,
+): Promise<string> {
+  replaceRefsWithTsTypes(schema, '#/components/schemas/', rootNamespaceName);
+  trimTypeTitles(schema);
+  if (skipAdditionalProperties) {
+    placeExplicitAdditionalProperties(schema, false);
+  }
+  if (namedEnums) {
+    const enumValues = schema.enum;
+    if (enumValues) {
+      let tsEnumNames: string[] | null = null;
+      if (schema.tsEnumNames) {
+        const candidates = parseEnumNameCandidates(path, enumValues, 'tsEnumNames', schema.tsEnumNames);
+        delete schema.tsEnumNames;
+        if (candidates) tsEnumNames = candidates;
+      }
+      if (!tsEnumNames && schema['x-enumNames']) {
+        const candidates = parseEnumNameCandidates(path, enumValues, 'x-enumNames', schema['x-enumNames']);
+        if (candidates) tsEnumNames = candidates;
+      }
+      if (!tsEnumNames) {
+        const candidates = enumValues;
+        const noBadCandidates = candidates.every(isValidJsIdentifier);
+        if (noBadCandidates) {
+          tsEnumNames = candidates as string[];
+        } else {
+          console.warn(
+            `Warning: Can not use values of ${path} as enum member names because some of them are not valid identifiers`,
+          );
+        }
+      }
+      if (tsEnumNames) {
+        schema.tsEnumNames = tsEnumNames;
+      } else {
+        console.warn(`Warning: Enum ${path} will be generated as union type because no valid names are available`);
+      }
+    }
+  }
+
+  const rawTsTypeDeclaration = await compile(schema, name, { bannerComment: '', enableConstEnums: false });
+
+  // @NOTE: json-schema-to-typescript forcibly converts type names to CamelCase,
+  //        so we have to convert them back to original casing if possible
+  const generatedName = toSafeString(name);
+  const targetName = isValidJsIdentifier(name) ? name : generatedName;
+  let tsTypeDeclaration = rawTsTypeDeclaration;
+  if (targetName !== generatedName) {
+    const tempFile = project.createSourceFile('temp.ts', rawTsTypeDeclaration);
+    const tsInterface = tempFile.getInterface(generatedName);
+    if (tsInterface) {
+      tsInterface.rename(name);
+    }
+    const tsEnum = tempFile.getEnum(generatedName);
+    if (tsEnum) {
+      tsEnum.rename(name);
+    }
+    const tsTypeAlias = tempFile.getTypeAlias(generatedName);
+    if (tsTypeAlias) {
+      tsTypeAlias.rename(name);
+    }
+
+    tsTypeDeclaration = tempFile.getText();
+    project.removeSourceFile(tempFile);
+  }
+
+  return tsTypeDeclaration;
 }
 
 const VALID_IDENTIFIER_REGEX = /^[$_\p{L}][$_\p{L}\p{N}]*$/u;
@@ -215,47 +293,17 @@ async function main(): Promise<number> {
         }
 
         const jsonSchema = cloneDeep(schema) as JSONSchema4;
-        replaceRefsWithTsTypes(jsonSchema, '#/components/schemas/', exportName);
-        trimTypeTitles(jsonSchema);
-        if (skipAdditionalProperties) {
-          placeExplicitAdditionalProperties(jsonSchema, false);
-        }
-        if (namedEnums) {
-          const enumValues = jsonSchema.enum;
-          if (enumValues) {
-            let tsEnumNames: string[] | null = null;
-            if (jsonSchema.tsEnumNames) {
-              const candidates = parseEnumNameCandidates(path, enumValues, 'tsEnumNames', jsonSchema.tsEnumNames);
-              delete jsonSchema.tsEnumNames;
-              if (candidates) tsEnumNames = candidates;
-            }
-            if (!tsEnumNames && jsonSchema['x-enumNames']) {
-              const candidates = parseEnumNameCandidates(path, enumValues, 'x-enumNames', jsonSchema['x-enumNames']);
-              if (candidates) tsEnumNames = candidates;
-            }
-            if (!tsEnumNames) {
-              const candidates = enumValues;
-              const noBadCandidates = candidates.every(isValidJsIdentifier);
-              if (noBadCandidates) {
-                tsEnumNames = candidates as string[];
-              } else {
-                console.warn(
-                  `Warning: Can not use values of ${path} as enum member names because some of them are not valid identifiers`,
-                );
-              }
-            }
-            if (tsEnumNames) {
-              jsonSchema.tsEnumNames = tsEnumNames;
-            } else {
-              console.warn(
-                `Warning: Enum ${path} will be generated as union type because no valid names are available`,
-              );
-            }
-          }
-        }
-        const rawSchemaInterface = await compile(jsonSchema, name, { bannerComment: '', enableConstEnums: false });
+        const tsTypeDeclaration = await schemaToTsTypeDeclaration(
+          project,
+          jsonSchema,
+          path,
+          name,
+          exportName,
+          skipAdditionalProperties,
+          namedEnums,
+        );
         targetNamespace.addStatements((writer) => {
-          writer.write(rawSchemaInterface);
+          writer.write(tsTypeDeclaration);
         });
       }
     }
@@ -304,13 +352,13 @@ async function main(): Promise<number> {
                         if (!schema) {
                           throw new Error(`Unexpected situation, schema for request body of ${route} is missing`);
                         }
-                        const rawTsType = await schemaToRawTsType(
+                        const tsTypeExpression = await schemaToTsTypeExpression(
                           project,
                           schema,
                           exportName,
                           skipAdditionalProperties,
                         );
-                        operationProperties.push({ name: 'body', type: rawTsType, hasQuestionToken: !required });
+                        operationProperties.push({ name: 'body', type: tsTypeExpression, hasQuestionToken: !required });
                       } else {
                         throw new Error(`Unexpected situation, unknown media type for request body of ${route}`);
                       }
@@ -328,7 +376,7 @@ async function main(): Promise<number> {
                             `Unexpected situation, schema for parameter ${parameter.name} of ${route} is missing`,
                           );
                         }
-                        const rawTsType = await schemaToRawTsType(
+                        const tsTypeExpression = await schemaToTsTypeExpression(
                           project,
                           schema,
                           exportName,
@@ -336,7 +384,7 @@ async function main(): Promise<number> {
                         );
                         paramProperties.push({
                           name: parameter.name,
-                          type: rawTsType,
+                          type: tsTypeExpression,
                           hasQuestionToken: !parameter.required,
                         });
                       }
@@ -357,7 +405,7 @@ async function main(): Promise<number> {
                             `Unexpected situation, schema for parameter ${parameter.name} of ${route} is missing`,
                           );
                         }
-                        const rawTsType = await schemaToRawTsType(
+                        const tsTypeExpression = await schemaToTsTypeExpression(
                           project,
                           schema,
                           exportName,
@@ -365,7 +413,7 @@ async function main(): Promise<number> {
                         );
                         paramProperties.push({
                           name: parameter.name,
-                          type: rawTsType,
+                          type: tsTypeExpression,
                           hasQuestionToken: !parameter.required,
                         });
                       }
@@ -392,13 +440,17 @@ async function main(): Promise<number> {
                             if (!schema) {
                               throw new Error(`Unexpected situation, schema for response body of ${route} is missing`);
                             }
-                            const rawTsType = await schemaToRawTsType(
+                            const tsTypeExpression = await schemaToTsTypeExpression(
                               project,
                               schema,
                               exportName,
                               skipAdditionalProperties,
                             );
-                            operationProperties.push({ name: 'response', type: rawTsType, hasQuestionToken: false });
+                            operationProperties.push({
+                              name: 'response',
+                              type: tsTypeExpression,
+                              hasQuestionToken: false,
+                            });
                           } else {
                             operationProperties.push({ name: 'response', type: 'ArrayBuffer' });
                             operationProperties.push({
