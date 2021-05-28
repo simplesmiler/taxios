@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@types/url-join": "^4.0.0",
+    "@types/qs": "^6.9.4",
     "qs": "^6.9.4",
     "type-fest": "^0.16.0",
     "url-join": "^4.0.1"

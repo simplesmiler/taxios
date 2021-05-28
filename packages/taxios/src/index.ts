@@ -95,13 +95,14 @@ type LaxConfig = {
   query?: { [key in string]: any };
   responseType?: ResponseType;
   axios?: AxiosRequestConfig;
+  qs?: qs.IStringifyOptions;
 };
 
 type RequestConfig<TApi extends Scheme, TMethod extends Method, TRoute extends AvailableRoutes<TApi, TMethod>> = Config<
   TApi,
   TMethod,
   TRoute
-> & { axios?: AxiosRequestConfig };
+> & { axios?: AxiosRequestConfig; qs?: qs.IStringifyOptions };
 
 type LaxRequestConfig = LaxConfig & { axios?: AxiosRequestConfig };
 
@@ -135,8 +136,8 @@ type UrlArgs<
   TMethod extends Method,
   TRoute extends AvailableRoutes<TApi, TMethod>
 > = HasRequiredProperties<Config<TApi, TMethod, TRoute>> extends true
-  ? Parameters<(config: Config<TApi, TMethod, TRoute>) => void>
-  : Parameters<(config?: Config<TApi, TMethod, TRoute>) => void>;
+  ? Parameters<(config: RequestConfig<TApi, TMethod, TRoute>) => void>
+  : Parameters<(config?: RequestConfig<TApi, TMethod, TRoute>) => void>;
 
 type LaxUrlArgs<TMethod extends Method> = Parameters<(config?: LaxConfig) => void>;
 
@@ -147,11 +148,17 @@ type InferredUrlArgs<
   TStrict extends boolean
 > = TStrict extends true ? UrlArgs<TApi, TMethod, TRoute> : LaxUrlArgs<TMethod>;
 
+export type TaxiosOptions = {
+  qs?: qs.IStringifyOptions;
+};
+
 export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
   private axios: AxiosInstance;
+  private qs?: qs.IStringifyOptions;
 
-  constructor(axios: AxiosInstance) {
+  constructor(axios: AxiosInstance, opts?: TaxiosOptions) {
     this.axios = axios;
+    this.qs = opts?.qs;
   }
 
   get unsafe(): Taxios<TApi, false> {
@@ -189,7 +196,7 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
       }
       const rawQuery = rawConfig.query;
       if (rawQuery) {
-        urlString += '?' + qs.stringify(rawQuery);
+        urlString += '?' + qs.stringify(rawQuery, rawConfig.qs || this.qs);
       }
       const rawAxiosConfig = rawConfig.axios;
       if (rawAxiosConfig) {

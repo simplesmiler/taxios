@@ -1,0 +1,71 @@
+openapi: 3.0.0
+info:
+  title: Structured query params
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /v1/test:
+    get:
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: firstName
+          required: true
+        - schema:
+            type: string
+          in: query
+          name: lastName
+        - schema:
+            type: number
+          in: query
+          name: age
+        - schema:
+            type: boolean
+          in: query
+          name: employed
+          required: true
+        - schema:
+            type: array
+            items:
+              type: string
+              enum: ['ru', 'en', 'fr', 'de', 'jp']
+          in: query
+          name: languages
+        - schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Asset'
+          in: query
+          name: assets
+        - schema:
+            type: object
+            properties:
+              good:
+                type: array
+                items:
+                  type: string
+              bad:
+                type: array
+                items:
+                  type: string
+          in: query
+          name: qualities
+      responses:
+        '200':
+          description: OK
+    parameters: []
+components:
+  schemas:
+    Asset:
+      title: Asset
+      type: object
+      properties:
+        currency:
+          type: string
+        amount:
+          type: integer
+      required:
+        - currency
+        - amount
