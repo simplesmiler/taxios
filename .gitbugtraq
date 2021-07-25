@@ -1,0 +1,4 @@
+[bugtraq]
+  url = https://github.com/simplesmiler/taxios/issues/%BUGID%
+  loglinkregex = "#\\d+"
+  logregex = \\d+
