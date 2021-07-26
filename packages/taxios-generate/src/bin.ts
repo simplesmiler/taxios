@@ -344,9 +344,13 @@ async function main(): Promise<number> {
                           requestBody.content['application/x-www-form-urlencoded'],
                       );
                       const jsonMediaType = maybe(requestBody.content['application/json']);
+                      const blobMediaType = maybe(requestBody.content['application/octet-stream']);
                       if (formDataMediaType) {
                         // @NOTE: Form data currently can not be typed further, so we ignore everything else
                         operationProperties.push({ name: 'body', type: 'FormData', hasQuestionToken: !required });
+                      } else if (blobMediaType) {
+                        // @NOTE: Blob currently can not be typed further, so we ignore everything else
+                        operationProperties.push({ name: 'body', type: 'Blob', hasQuestionToken: !required });
                       } else if (jsonMediaType) {
                         const schema = jsonMediaType.schema;
                         if (!schema) {
