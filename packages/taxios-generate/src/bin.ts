@@ -360,7 +360,8 @@ async function main(): Promise<number> {
                         // @NOTE: Form data currently can not be typed further, so we ignore everything else
                         operationProperties.push({ name: 'body', type: 'FormData', hasQuestionToken: !required });
                       } else {
-                        throw new Error(`Unexpected situation, unknown media type for request body of ${route}`);
+                        console.warn(`Warning: Unknown media type for request body of ${route}`);
+                        operationProperties.push({ name: 'body', type: 'unknown', hasQuestionToken: !required });
                       }
                     }
                     //
