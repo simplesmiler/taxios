@@ -2,22 +2,49 @@ import Axios from 'axios';
 import { Taxios } from '../../taxios/src';
 import { PetStore } from './generated/PetStore';
 import { QueryParams } from './generated/QueryParams';
+import { PetStore3 } from './generated/PetStore3';
 
 async function main(): Promise<number> {
   {
+    console.log('# Testing PetStore v2');
     const axios = Axios.create({ baseURL: 'https://petstore.swagger.io/v2' });
     const taxios = new Taxios<PetStore>(axios);
     //
     const url = taxios.url('GET', '/pet/{petId}', { params: { petId: 1 } });
     console.log(url);
     //
-    const { data: pet } = await taxios.get('/pet/{petId}', {
-      params: { petId: 1 },
-    });
-    console.log(pet);
+    try {
+      const { data: pet } = await taxios.get('/pet/{petId}', {
+        params: { petId: 1 },
+      });
+      console.log(pet);
+    } catch (err) {
+      console.error(err.message);
+    }
+    console.log('');
   }
 
   {
+    console.log('# Testing PetStore v3');
+    const axios = Axios.create({ baseURL: 'https://petstore3.swagger.io/api/v3' });
+    const taxios = new Taxios<PetStore3>(axios);
+    //
+    const url = taxios.url('GET', '/pet/{petId}', { params: { petId: 1 } });
+    console.log(url);
+    //
+    try {
+      const { data: pet } = await taxios.get('/pet/{petId}', {
+        params: { petId: 1 },
+      });
+      console.log(pet);
+    } catch (err) {
+      console.error(err.message);
+    }
+    console.log('');
+  }
+
+  {
+    console.log('# Testing QueryParams');
     const axios = Axios.create();
     const taxios = new Taxios<QueryParams>(axios);
     const url = taxios.url('GET', '/v1/test', {
@@ -39,6 +66,7 @@ async function main(): Promise<number> {
       },
     });
     console.log(url);
+    console.log('');
   }
   //
   return 0;

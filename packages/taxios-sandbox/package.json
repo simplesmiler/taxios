@@ -11,6 +11,7 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "generate:petstore": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts https://petstore.swagger.io/v2/swagger.json -o ./src/generated/PetStore.ts -e PetStore --named-enums --skip-additional-properties",
+    "generate:petstore3": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts https://petstore3.swagger.io/api/v3/openapi.json -o ./src/generated/PetStore3.ts -e PetStore3 --named-enums --skip-additional-properties",
     "generate:named-enums": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/named-enums.yml -o ./src/generated/NamedEnums.ts -e NamedEnums --named-enums",
     "generate:snake-case": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/snake-case.yml -o ./src/generated/snake_case.ts -e snake_case --named-enums",
     "generate:query-params": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/query-params.yml -o ./src/generated/QueryParams.ts -e QueryParams",
