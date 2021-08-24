@@ -339,15 +339,12 @@ async function main(): Promise<number> {
                     if (requestBody) {
                       const required = requestBody.required;
                       // @TODO: This is flaky, what if request body has multiple media types?
+                      const jsonMediaType = maybe(requestBody.content['application/json']);
                       const formDataMediaType = maybe(
                         requestBody.content['multipart/form-data'] ||
                           requestBody.content['application/x-www-form-urlencoded'],
                       );
-                      const jsonMediaType = maybe(requestBody.content['application/json']);
-                      if (formDataMediaType) {
-                        // @NOTE: Form data currently can not be typed further, so we ignore everything else
-                        operationProperties.push({ name: 'body', type: 'FormData', hasQuestionToken: !required });
-                      } else if (jsonMediaType) {
+                      if (jsonMediaType) {
                         const schema = jsonMediaType.schema;
                         if (!schema) {
                           throw new Error(`Unexpected situation, schema for request body of ${route} is missing`);
@@ -359,6 +356,9 @@ async function main(): Promise<number> {
                           skipAdditionalProperties,
                         );
                         operationProperties.push({ name: 'body', type: tsTypeExpression, hasQuestionToken: !required });
+                      } else if (formDataMediaType) {
+                        // @NOTE: Form data currently can not be typed further, so we ignore everything else
+                        operationProperties.push({ name: 'body', type: 'FormData', hasQuestionToken: !required });
                       } else {
                         throw new Error(`Unexpected situation, unknown media type for request body of ${route}`);
                       }
@@ -432,7 +432,7 @@ async function main(): Promise<number> {
                       if (http200) {
                         const mediaTypeObject = http200.content;
                         if (mediaTypeObject) {
-                          // @TODO: This is flaky, what if request body has multiple media types?
+                          // @TODO: This is flaky, what if response has multiple media types?
                           // @TODO: Add textual media types
                           const jsonMediaType = maybe(mediaTypeObject['application/json']);
                           if (jsonMediaType) {
