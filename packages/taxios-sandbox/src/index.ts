@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { Taxios } from '@simplesmiler/taxios';
+import { Taxios } from '../../taxios/src';
 import { PetStore } from './generated/PetStore';
 import { QueryParams } from './generated/QueryParams';
 
