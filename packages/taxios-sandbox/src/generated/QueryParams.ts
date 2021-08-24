@@ -21,7 +21,6 @@ export interface QueryParams {
           qualities?: {
             good?: string[];
             bad?: string[];
-            [k: string]: unknown;
           };
         };
       };
