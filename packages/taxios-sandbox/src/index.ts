@@ -4,7 +4,7 @@ import { PetStore } from './generated/PetStore';
 import { QueryParams } from './generated/QueryParams';
 import { PetStore3 } from './generated/PetStore3';
 
-async function main(): Promise<number> {
+async function main(): Promise<void> {
   {
     console.log('# Testing PetStore v2');
     const axios = Axios.create({ baseURL: 'https://petstore.swagger.io/v2' });
@@ -68,15 +68,13 @@ async function main(): Promise<number> {
     console.log(url);
     console.log('');
   }
-  //
-  return 0;
 }
 
 main()
-  .then(function (code) {
-    process.exit(code);
+  .then(() => {
+    process.exit(0);
   })
-  .catch(function (err) {
+  .catch((err) => {
     console.error(err);
     process.exit(1);
   });
