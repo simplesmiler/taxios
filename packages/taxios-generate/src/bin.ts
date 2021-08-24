@@ -429,6 +429,7 @@ async function main(): Promise<number> {
                     //
                     const responses = operation.responses;
                     if (responses) {
+                      // @TODO: This is flaky, what if response has multiple status codes?
                       const http200 = resolveRef(openApiParser, responses['200']); // @NOTE: OpenAPI types are wrong about this index type
                       if (http200) {
                         const mediaTypeObject = http200.content;
