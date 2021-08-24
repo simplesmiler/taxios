@@ -16,12 +16,12 @@ components:
       type: string
       enum: [Placed, Approved, Delivered]
     StatusCode:
-      enum: [ 200, 400 ]
-      x-enumNames: [ Ok, BadRequest ]
+      enum: [200, 400]
+      x-enumNames: [Ok, BadRequest]
     NamedEnum:
-      enum: [ $, _, a1, 'привет', '日本', 'null', delete ]
+      enum: [$, _, a1, 'привет', '日本', 'null', delete]
     UnionType:
-      enum: [ '1', ' untrimmed ', '#', null, true, [1, 2] ]
+      enum: ['1', ' untrimmed ', '#', null, true, [1, 2]]
     RubiksCubeAlgorithm:
       type: array
       items:
