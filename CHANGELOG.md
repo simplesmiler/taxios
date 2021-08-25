@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+### Breaking
+- TypeScript 4.3 is now required.
+- `--skip-additional-properties` is the new default. Use `--keep-additional-properties` for old behaviour.
+- `--named-enums` is the new default. Use `--union-enums` for old behaviour.
+
 ## 0.2.8
 ### Fixed
 - JSON is now preferred over FormData when both request bodies are allowed.

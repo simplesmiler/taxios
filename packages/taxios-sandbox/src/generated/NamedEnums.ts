@@ -8,7 +8,7 @@ export namespace NamedEnums {
     Ok = 200,
     BadRequest = 400,
   }
-  export enum NamedEnum {
+  export enum ValidIdentifier {
     $ = '$',
     _ = '_',
     a1 = 'a1',
@@ -17,7 +17,7 @@ export namespace NamedEnums {
     null = 'null',
     delete = 'delete',
   }
-  export type UnionType = '1' | ' untrimmed ' | '#' | null | true | [1, 2];
+  export type InvalidIdentifier = '1' | ' untrimmed ' | '#' | null | true | [1, 2];
   export type RubiksCubeAlgorithm = {
     face: 'F' | 'R' | 'U' | 'L' | 'B' | 'D';
     turns: -1 | 1 | 2;

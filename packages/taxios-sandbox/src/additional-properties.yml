@@ -17,7 +17,7 @@ components:
       properties:
         name:
           type: string
-    ImplicitSkip:
+    Implicit:
       type: object
       properties:
         name:

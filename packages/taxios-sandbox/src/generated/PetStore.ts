@@ -3,12 +3,10 @@ export namespace PetStore {
     code?: number;
     type?: string;
     message?: string;
-    [k: string]: unknown;
   }
   export interface Category {
     id?: number;
     name?: string;
-    [k: string]: unknown;
   }
   export interface Pet {
     id?: number;
@@ -20,12 +18,10 @@ export namespace PetStore {
      * pet status in the store
      */
     status?: 'available' | 'pending' | 'sold';
-    [k: string]: unknown;
   }
   export interface Tag {
     id?: number;
     name?: string;
-    [k: string]: unknown;
   }
   export interface Order {
     id?: number;
@@ -37,7 +33,6 @@ export namespace PetStore {
      */
     status?: 'placed' | 'approved' | 'delivered';
     complete?: boolean;
-    [k: string]: unknown;
   }
   export interface User {
     id?: number;
@@ -51,7 +46,6 @@ export namespace PetStore {
      * User Status
      */
     userStatus?: number;
-    [k: string]: unknown;
   }
 }
 
@@ -110,6 +104,13 @@ export interface PetStore {
         };
       };
     };
+    '/store/inventory': {
+      GET: {
+        response: {
+          [k: string]: number;
+        };
+      };
+    };
     '/store/order': {
       POST: {
         body: PetStore.Order;
@@ -127,18 +128,6 @@ export interface PetStore {
         params: {
           orderId: number;
         };
-      };
-    };
-    '/store/inventory': {
-      GET: {
-        response: {
-          [k: string]: number;
-        };
-      };
-    };
-    '/user/createWithArray': {
-      POST: {
-        body: PetStore.User[];
       };
     };
     '/user/createWithList': {
@@ -176,6 +165,11 @@ export interface PetStore {
     };
     '/user/logout': {
       GET: {};
+    };
+    '/user/createWithArray': {
+      POST: {
+        body: PetStore.User[];
+      };
     };
     '/user': {
       POST: {

@@ -44,6 +44,8 @@ See [@simplesmiler/taxios](https://github.com/simplesmiler/taxios/tree/master/pa
 
 > **WARNING**: The following only applies to "standalone" enums. Inline enums can only be expressed as inline union types.
 
+> **WARNING**: Since 0.3.0 `--named-enums` is the default behavior, and to generate union types use `--union-enums`.
+
 Look at the following OpenAPI snippet:
 
 ```yaml
@@ -84,6 +86,8 @@ components:
 If no valid names are available, `taxios-generate` will fallback to generating a union type.
 
 ## [0.2.5+] Additional properties
+
+> **WARNING**: Since 0.3.0 `--skip-additional-properties` is the default behavior, and to generate additional properties use `--keep-additional-properties`.
 
 Look at the following OpenAPI snippet:
 

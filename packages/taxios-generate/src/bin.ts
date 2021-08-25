@@ -200,11 +200,21 @@ async function main(): Promise<number> {
     help: boolean;
     version: boolean;
     'named-enums': boolean;
+    'union-enums': boolean;
     'skip-additional-properties': boolean;
+    'keep-additional-properties': boolean;
   };
   const argv = minimist<Argv>(args, {
     string: ['out', 'export'],
-    boolean: ['skip-validation', 'named-enums', 'skip-additional-properties', 'help', 'version'],
+    boolean: [
+      'skip-validation',
+      'named-enums',
+      'union-enums',
+      'skip-additional-properties',
+      'keep-additional-properties',
+      'help',
+      'version',
+    ],
     alias: {
       out: ['o'],
       export: ['e'],
@@ -216,7 +226,9 @@ async function main(): Promise<number> {
       version: false,
       'skip-validate': false,
       'named-enums': false,
+      'union-enums': false,
       'skip-additional-properties': false,
+      'keep-additional-properties': false,
     },
   });
   if (argv.help) {
@@ -231,8 +243,8 @@ async function main(): Promise<number> {
         '  -o, --out FILE                    Write into this file',
         '  -e, --export NAME                 Export generated definition under this name',
         '      --skip-validation             Skip strict schema validation',
-        '      --named-enums                 Generate named enums instead of union types when possible',
-        '      --skip-additional-properties  Skip generating`[k: string]: unknown` for objects, unless explicitly asked', // @WIP: Document in other places
+        '      --union-enums                 Generate union enums instead of named enums when possible',
+        '      --keep-additional-properties  Generate`[k: string]: unknown` for objects, unless explicitly asked',
         '  -v, --version                     Print version',
       ].join('\n'),
     );
@@ -247,8 +259,21 @@ async function main(): Promise<number> {
   const inputPath = maybe(argv._[0]);
   const outputPath = argv.out;
   const validate = !argv['skip-validation'];
-  const namedEnums = argv['named-enums'];
-  const skipAdditionalProperties = argv['skip-additional-properties'];
+
+  const namedEnums = !argv['union-enums'];
+  if (argv['named-enums']) {
+    console.warn(
+      'Warning: You are using deprecated option --named-enums, which is now the default behavior. You can safely remove this option.',
+    );
+  }
+
+  const skipAdditionalProperties = !argv['keep-additional-properties'];
+  if (argv['skip-additional-properties']) {
+    console.warn(
+      'Warning: You are using deprecated option --skip-additional-properties, which is now the default behavior. You can safely remove this option.',
+    );
+  }
+
   //
   if (!inputPath || argv._.length > 1) {
     console.error('You have to specify a single input file or url');

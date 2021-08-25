@@ -2,7 +2,6 @@ export namespace QueryParams {
   export interface Asset {
     currency: string;
     amount: number;
-    [k: string]: unknown;
   }
 }
 

@@ -18,9 +18,9 @@ components:
     StatusCode:
       enum: [200, 400]
       x-enumNames: [Ok, BadRequest]
-    NamedEnum:
+    ValidIdentifier:
       enum: [$, _, a1, 'привет', '日本', 'null', delete]
-    UnionType:
+    InvalidIdentifier:
       enum: ['1', ' untrimmed ', '#', null, true, [1, 2]]
     RubiksCubeAlgorithm:
       type: array
