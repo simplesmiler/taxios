@@ -8,7 +8,9 @@
     "fix:prettier": "prettier --write .",
     "lint:eslint": "eslint --ext .ts,.tsx,.js .",
     "fix:eslint": "eslint --ext .ts,.tsx,.js . --fix",
-    "clean": "lerna clean",
+    "clean": "run-s -csn clean:lerna clean:dist",
+    "clean:lerna": "lerna clean",
+    "clean:dist": "lerna run clean",
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
     "publish": "lerna publish --force-publish *"

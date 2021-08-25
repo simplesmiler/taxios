@@ -22,7 +22,7 @@
     "@simplesmiler/taxios-generate": "^0.2.0",
     "@types/node": "^16.7.1",
     "axios": "^0.21.1",
-    "shx": "^0.3.2",
+    "shx": "^0.3.3",
     "ts-node": "^10.2.1",
     "typescript": "^4.3.5"
   },

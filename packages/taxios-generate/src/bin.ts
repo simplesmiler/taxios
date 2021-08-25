@@ -2,7 +2,7 @@
 
 import { promises as outerFs } from 'fs';
 import nodePath from 'path';
-import { OptionalKind, Project, PropertySignatureStructure, Writers } from 'ts-morph';
+import { ModuleDeclarationKind, OptionalKind, Project, PropertySignatureStructure, Writers } from 'ts-morph';
 import { cloneDeep } from 'lodash';
 import { compile } from 'json-schema-to-typescript';
 import { toSafeString } from 'json-schema-to-typescript/dist/src/utils';
@@ -10,10 +10,9 @@ import { JSONSchema4, JSONSchema4Type } from 'json-schema';
 import traverse from 'json-schema-traverse';
 import mkdirp from 'mkdirp';
 import minimist from 'minimist';
+import { eraseRefObject, maybe, openApiMethods, parseToOpenApi, resolveRef, resolveRefArray } from './utils';
 
 const pkg = require('../package.json');
-
-import { eraseRefObject, maybe, openApiMethods, parseToOpenApi, resolveRef, resolveRefArray } from './utils';
 
 function replaceRefsWithTsTypes(tree: JSONSchema4, prefix: string, rootNamespaceName: string): void {
   traverse(tree, (node: JSONSchema4) => {
@@ -269,7 +268,11 @@ async function main(): Promise<number> {
   //
   const project = new Project({ useInMemoryFileSystem: true });
   const generatedFile = project.createSourceFile(`generated.ts`);
-  const rootNamespace = generatedFile.addNamespace({ name: exportName, isExported: true });
+  const rootNamespace = generatedFile.addModule({
+    declarationKind: ModuleDeclarationKind.Namespace,
+    name: exportName,
+    isExported: true,
+  });
   //
   // @SECTION: Schemas
   const components = openApiDocument.components;
@@ -287,9 +290,14 @@ async function main(): Promise<number> {
 
         let targetNamespace = rootNamespace;
         for (const namespaceName of namespaceNames) {
-          const childNamespace = targetNamespace.getNamespace(namespaceName);
+          const childNamespace = targetNamespace.getModule(namespaceName);
           if (childNamespace) targetNamespace = childNamespace;
-          else targetNamespace = targetNamespace.addNamespace({ name: namespaceName, isExported: true });
+          else
+            targetNamespace = targetNamespace.addModule({
+              declarationKind: ModuleDeclarationKind.Namespace,
+              name: namespaceName,
+              isExported: true,
+            });
         }
 
         const jsonSchema = cloneDeep(schema) as JSONSchema4;
@@ -325,6 +333,12 @@ async function main(): Promise<number> {
     type: Writers.objectType({
       properties: await Promise.all(
         Object.entries(openApiDocument.paths).map(async ([route, pathItem]) => {
+          if (!pathItem) {
+            // @NOTE: This seems to be just a side effect of Object.entries with optional index signature,
+            //        so it should never happen in practice
+            // @REFERENCE: https://github.com/kogosoftwarellc/open-api/pull/702
+            throw new Error(`Unexpected situation, pathItem of ${route} is missing`);
+          }
           const commonParameters = resolveRefArray(openApiParser, pathItem.parameters) || []; // @NOTE: Url fragment params
           return {
             name: JSON.stringify(route), // @NOTE: E.g. PetStore.Api['routes']['/users/{id}']
