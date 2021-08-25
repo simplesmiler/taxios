@@ -4,6 +4,7 @@
   "scripts": {
     "lint": "prettier --check . && eslint --ext .ts .",
     "lint:fix": "prettier --write . && eslint --fix --ext .ts,.js .",
+    "clean": "lerna clean",
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
     "publish": "lerna publish --force-publish *"
@@ -13,7 +14,7 @@
     "@typescript-eslint/parser": "^3.7.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^6.15.0",
-    "lerna": "^3.22.1",
+    "lerna": "^4.0.0",
     "prettier": "^2.3.2",
     "typescript": "^3.9.10"
   }

@@ -1,6 +1,5 @@
 # Dev artifacts
 /packages/**/dist
-/packages/**/package-lock.json
 
 /**/lerna-debug.log
 /**/node_modules
