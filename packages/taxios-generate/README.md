@@ -15,7 +15,7 @@ Options:
       --skip-validation             Skip strict schema validation
       --named-enums                 [0.2.4+] Generate named enums instead of union types when possible
       --skip-additional-properties  [0.2.5+] Skip generating`[k: string]: unknown` for objects, unless explicitly asked
-      --sort-fields                 [0.2.9+] Sort fields in interfaces instead of keeping the order from source
+      --sort-fields                 [0.2.10+] Sort fields in interfaces instead of keeping the order from source
 ```
 
 ## Example
@@ -130,7 +130,7 @@ components:
       additionalProperties: true
 ```
 
-## [0.2.9+] Sort fields
+## [0.2.10+] Sort fields
 
 Look at the following OpenAPI snippet:
 
@@ -150,7 +150,7 @@ components:
       additionalProperties: false
 ```
 
-Prior to 0.2.9 fields in generated interface would always be in the same order as in the source:
+Prior to 0.2.10 fields in generated interface would always be in the same order as in the source:
 
 ```ts
 export interface User {
@@ -159,7 +159,7 @@ export interface User {
 }
 ```
 
-Since 0.2.9 you can use `--sort-fields` option to enforce the alphabetical order of fields:
+Since 0.2.10 you can use `--sort-fields` option to enforce the alphabetical order of fields:
 
 ```ts
 export interface User {
