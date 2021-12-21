@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `--skip-additional-properties` is the new default. Use `--keep-additional-properties` for old behaviour.
 - `--named-enums` is the new default. Use `--union-enums` for old behaviour.
 
+## 0.2.10
+### Added
+- `--sort-fields` option.
+
 ## 0.2.8
 ### Fixed
 - JSON is now preferred over FormData when both request bodies are allowed.
@@ -17,7 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Axios bumped to `^0.21.0`.
 - Lerna bumped to  `^4.0.0`.
-
 
 ## 0.2.7
 ### Added

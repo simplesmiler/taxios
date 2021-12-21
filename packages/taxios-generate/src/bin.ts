@@ -3,7 +3,7 @@
 import { promises as outerFs } from 'fs';
 import nodePath from 'path';
 import { ModuleDeclarationKind, OptionalKind, Project, PropertySignatureStructure, Writers } from 'ts-morph';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, sortBy } from 'lodash';
 import { compile } from 'json-schema-to-typescript';
 import { toSafeString } from 'json-schema-to-typescript/dist/src/utils';
 import { JSONSchema4, JSONSchema4Type } from 'json-schema';
@@ -27,6 +27,19 @@ function replaceRefsWithTsTypes(tree: JSONSchema4, prefix: string, rootNamespace
         nameParts.unshift(rootNamespaceName);
       }
       node.tsType = nameParts.join('.');
+    }
+  });
+}
+
+function sortFields(tree: JSONSchema4): void {
+  traverse(tree, (node: JSONSchema4) => {
+    if (node.type === 'object' && node.properties) {
+      const sortedProperties = {};
+      const keys = sortBy(Object.keys(node.properties));
+      for (const key of keys) {
+        sortedProperties[key] = node.properties[key];
+      }
+      node.properties = sortedProperties;
     }
   });
 }
@@ -57,6 +70,7 @@ async function schemaToTsTypeExpression(
   schema: JSONSchema4,
   rootNamespaceName: string,
   skipAdditionalProperties: boolean,
+  shouldSortFields: boolean,
 ): Promise<string> {
   // @NOTE: Wrap schema in object to force generator to produce type instead of interface
   const wrappedSchema = { type: 'object', properties: { target: cloneDeep(schema) } } as JSONSchema4;
@@ -64,6 +78,9 @@ async function schemaToTsTypeExpression(
   trimTypeTitles(wrappedSchema);
   if (skipAdditionalProperties) {
     placeExplicitAdditionalProperties(wrappedSchema, false);
+  }
+  if (shouldSortFields) {
+    sortFields(wrappedSchema);
   }
 
   const rawTsWrappedInterface = await compile(wrappedSchema, 'Temp', { bannerComment: '' });
@@ -90,11 +107,15 @@ async function schemaToTsTypeDeclaration(
   rootNamespaceName: string,
   skipAdditionalProperties: boolean,
   namedEnums: boolean,
+  shouldSortFields: boolean,
 ): Promise<string> {
   replaceRefsWithTsTypes(schema, '#/components/schemas/', rootNamespaceName);
   trimTypeTitles(schema);
   if (skipAdditionalProperties) {
     placeExplicitAdditionalProperties(schema, false);
+  }
+  if (shouldSortFields) {
+    sortFields(schema);
   }
   if (namedEnums) {
     const enumValues = schema.enum;
@@ -203,6 +224,7 @@ async function main(): Promise<number> {
     'union-enums': boolean;
     'skip-additional-properties': boolean;
     'keep-additional-properties': boolean;
+    'sort-fields': boolean;
   };
   const argv = minimist<Argv>(args, {
     string: ['out', 'export'],
@@ -212,6 +234,7 @@ async function main(): Promise<number> {
       'union-enums',
       'skip-additional-properties',
       'keep-additional-properties',
+      'sort-fields',
       'help',
       'version',
     ],
@@ -229,6 +252,7 @@ async function main(): Promise<number> {
       'union-enums': false,
       'skip-additional-properties': false,
       'keep-additional-properties': false,
+      'sort-fields': false,
     },
   });
   if (argv.help) {
@@ -245,6 +269,7 @@ async function main(): Promise<number> {
         '      --skip-validation             Skip strict schema validation',
         '      --union-enums                 Generate union enums instead of named enums when possible',
         '      --keep-additional-properties  Generate`[k: string]: unknown` for objects, unless explicitly asked',
+        '      --sort-fields                 Sort fields in interfaces instead of keeping the order from source',
         '  -v, --version                     Print version',
       ].join('\n'),
     );
@@ -259,6 +284,7 @@ async function main(): Promise<number> {
   const inputPath = maybe(argv._[0]);
   const outputPath = argv.out;
   const validate = !argv['skip-validation'];
+  const shouldSortFields = argv['sort-fields'];
 
   const namedEnums = !argv['union-enums'];
   if (argv['named-enums']) {
@@ -334,6 +360,7 @@ async function main(): Promise<number> {
           exportName,
           skipAdditionalProperties,
           namedEnums,
+          shouldSortFields,
         );
         targetNamespace.addStatements((writer) => {
           writer.write(tsTypeDeclaration);
@@ -393,6 +420,7 @@ async function main(): Promise<number> {
                           schema,
                           exportName,
                           skipAdditionalProperties,
+                          shouldSortFields,
                         );
                         operationProperties.push({ name: 'body', type: tsTypeExpression, hasQuestionToken: !required });
                       } else if (formDataMediaType) {
@@ -421,6 +449,7 @@ async function main(): Promise<number> {
                           schema,
                           exportName,
                           skipAdditionalProperties,
+                          shouldSortFields,
                         );
                         paramProperties.push({
                           name: parameter.name,
@@ -450,6 +479,7 @@ async function main(): Promise<number> {
                           schema,
                           exportName,
                           skipAdditionalProperties,
+                          shouldSortFields,
                         );
                         paramProperties.push({
                           name: parameter.name,
@@ -486,6 +516,7 @@ async function main(): Promise<number> {
                               schema,
                               exportName,
                               skipAdditionalProperties,
+                              shouldSortFields,
                             );
                             operationProperties.push({
                               name: 'response',
