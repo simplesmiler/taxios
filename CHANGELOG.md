@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 0.2.8
 ### Fixed
 - JSON is now preferred over FormData when both request bodies are allowed.
-- `taxios-generate` no longer panics on unknown response media types.
+- `taxios-generate` no longer panics on unknown request media types.
 ### Security
 - Axios bumped to `^0.21.0`.
 - Lerna bumped to  `^4.0.0`.
