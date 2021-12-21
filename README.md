@@ -32,3 +32,15 @@ const taxios = new Taxios<PetStore>(axios.create({ baseURL: 'https://petstore.sw
 // Make request
 const pet = await taxios.get('/pet/{petId}', { params: { petId: 1 } });
 ```
+
+## Develop
+
+1. Clone repo
+2. `npm run bootstrap`
+3. Change something in `taxios` or `taxios-generate` package
+4. Test by running scripts in `taxios-sandbox` packages
+
+## Publish
+
+1. `npm run build`
+2. `npm run publish`
