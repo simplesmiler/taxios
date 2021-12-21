@@ -15,6 +15,7 @@ Options:
       --skip-validation             Skip strict schema validation
       --named-enums                 [0.2.4+] Generate named enums instead of union types when possible
       --skip-additional-properties  [0.2.5+] Skip generating`[k: string]: unknown` for objects, unless explicitly asked
+      --sort-fields                 [0.2.9+] Sort fields in interfaces instead of keeping the order from source
 ```
 
 ## Example
@@ -128,3 +129,43 @@ components:
           type: string
       additionalProperties: true
 ```
+
+## [0.2.9+] Sort fields
+
+Look at the following OpenAPI snippet:
+
+```yaml
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+      required:
+        - name
+        - email
+      additionalProperties: false
+```
+
+Prior to 0.2.9 fields in generated interface would always be in the same order as in the source:
+
+```ts
+export interface User {
+  name: string;
+  email: string;
+}
+```
+
+Since 0.2.9 you can use `--sort-fields` option to enforce the alphabetical order of fields:
+
+```ts
+export interface User {
+  email: string;
+  name: string;
+}
+```
+
+This option is useful if you want to minimize merge conflicts, and do have not control over the source OpenAPI document.
