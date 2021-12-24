@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script src="https://unpkg.com/axios@^0.20.0"></script>
+    <script>
+      window.Axios = window.axios;
+      delete window.axios;
+    </script>
+    <script type="module">
+      // import { Readable } from 'stream';
+
+      async function main() {
+
+        {
+          try {
+            const axios = Axios.create({ baseURL: 'http://localhost:5000' });
+            const text = 'Привет, 船員!';
+            const document = '<div>Hello</div>';
+            const array = [1, 5, 255];
+
+            // @NOTE: From JS
+            const jsTypedArray = Uint8Array.from(array);
+
+            // @NOTE: From Node
+            // const nodeBuffer = Buffer.from(array);
+            // const nodeStream = Readable.from(array);
+
+            // @NOTE: From Web
+            // const webUrlSearchParams = new URLSearchParams({ name: 'Helga' }); // @WIP
+            const webBlob = new Blob([jsTypedArray]);
+            const webStream = new ReadableStream/*<Uint8Array>*/({
+              start(c) {
+                c.enqueue(jsTypedArray);
+                c.close();
+              },
+            });
+            const webFile = new File([jsTypedArray], 'bytes.bin', { type: 'application/x-wtf' });
+            const webFormData = new FormData();
+            webFormData.append('file', webFile);
+
+            // const body = text;
+            // const body = document;
+            // const body = array;
+            // const body = jsTypedArray;
+            // const body = jsTypedArray.buffer;
+            // const body = nodeBuffer;
+            // const body = nodeStream;
+            // const body = webBlob;
+            const body = webStream;
+            // const body = webFile;
+            // const body = webFormData;
+
+            const response = await fetch('/echo', {
+              method: 'POST',
+              body,
+              headers: {
+                'content-type': 'application/octet-stream',
+              },
+              allowHTTP1ForStreamingUpload: true,
+            });
+
+            response.blob()
+
+            const data = response.body;
+            const contentType = response.headers.get('content-type');
+            console.log(data);
+
+            // const {
+            //   headers: { 'content-type': contentType },
+            //   data,
+            // } = await axios.post('/echo', body, {
+            //   responseType: 'arraybuffer', // @NOTE: In Node produces Buffer instead of ArrayBuffer :|
+            //   // responseType: 'blob', // @NOTE: In Node is the same as 'text'
+            //   // responseType: 'document', // @NOTE: In Node is the same as 'text'
+            //   // responseType: 'json', // @NOTE: Does not work in Node without transformResponse
+            //   // responseType: 'stream', // @NOTE: Real NodeStream in Node, does not work in Web, but WebStream API can be simulated from Blob, although without benefits of streams
+            //   // responseType: 'text', // @NOTE: Unreliable, will still try to parse as json because of default transformResponse
+            //   headers: {
+            //     // 'content-type': 'text/plain;charset=utf-8',
+            //     // 'content-type': 'text/xml;charset=utf-8',
+            //     // 'content-type': 'application/json;charset=utf-8',
+            //     // 'content-type': 'multipart/form-data',
+            //     // 'content-type': 'application/x-www-form-urlencoded',
+            //     'content-type': 'application/octet-stream',
+            //   },
+            //   // transformRequest: (req, headers) => {
+            //   //   console.log('@DEBUG: transformRequest', headers);
+            //   //   // console.log(axios.defaults.transformRequest);
+            //   //   return axios.defaults.transformRequest?.[0]?.(req, headers);
+            //   //   // return req;
+            //   // },
+            //   // transformResponse: (res, headers) => {
+            //   //   console.log('@DEBUG: transformResponse', headers);
+            //   //   // console.log(axios.defaults.transformResponse);
+            //   //   // return axios.defaults.transformResponse?.[0]?.(res, headers);
+            //   //   return res;
+            //   // },
+            // });
+
+            console.log('Request:', body, typeof body);
+            console.log('Response:', data, typeof data, contentType);
+
+            if (data instanceof Blob) {
+              // @NOTE: There's not much point to Blob::stream, because Blob is buffered in memory anyway.
+              const stream = data.stream();
+              console.log('Response (stream):', stream);
+              const bytes = await webStreamToJsTypedArray(stream);
+              console.log('Response (buffered):', bytes);
+            }
+
+            if (data instanceof ReadableStream) {
+              const bytes = await webStreamToJsTypedArray(data);
+              console.log('Response (buffered):', bytes);
+            }
+
+            // if (data instanceof Readable) {
+            //   const dataBuffer = await new Promise((resolve, reject) => {
+            //     const buffers/*: Buffer[]*/ = [];
+            //     data.on('data', (chunk) => {
+            //       buffers.push(chunk);
+            //     });
+            //     data.on('end', () => {
+            //       const buffer = Buffer.concat(buffers);
+            //       resolve(buffer);
+            //     });
+            //     data.on('error', (err) => {
+            //       reject(err);
+            //     });
+            //   });
+            //   console.log('Response (buffered):', dataBuffer);
+            // }
+          } catch (err) {
+            console.error(err);
+          }
+
+          async function webStreamToJsTypedArray(stream/*: ReadableStream*/)/*: Promise<Uint8Array>*/ {
+            const reader = stream.getReader();
+            const chunks/*: Uint8Array[] */ = [];
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              chunks.push(value);
+            }
+            // @NOTE: Uint8Array does not have a concat method, so we have to concat manually
+            const totalLength = chunks.reduce((total, chunk) => total + chunk.length, 0);
+            const bytes = new Uint8Array(totalLength);
+            {
+              let idx = 0;
+              for (const chunk of chunks) {
+                bytes.set(chunk, idx);
+                idx += chunk.length;
+              }
+            }
+            return bytes;
+          }
+        }
+      }
+      main();
+    </script>
+  </body>
+</html>
+

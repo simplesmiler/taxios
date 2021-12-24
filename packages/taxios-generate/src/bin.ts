@@ -499,36 +499,39 @@ async function main(): Promise<number> {
                     const responses = operation.responses;
                     if (responses) {
                       // @TODO: This is flaky, what if response has multiple status codes?
-                      const http200 = resolveRef(openApiParser, responses['200']); // @NOTE: OpenAPI types are wrong about this index type
-                      if (http200) {
-                        const mediaTypeObject = http200.content;
-                        if (mediaTypeObject) {
-                          // @TODO: This is flaky, what if response has multiple media types?
-                          // @TODO: Add textual media types
-                          const jsonMediaType = maybe(mediaTypeObject['application/json']);
-                          if (jsonMediaType) {
-                            const schema = jsonMediaType.schema;
-                            if (!schema) {
-                              throw new Error(`Unexpected situation, schema for response body of ${route} is missing`);
+                      const http2xx = ['200', '201', '202', '203', '204', '205', '206'].find((httpCode) => {
+                        return resolveRef(openApiParser, responses[httpCode]) !== undefined;
+                      });
+                      if (http2xx) {
+                        const response = resolveRef(openApiParser, responses[http2xx]);
+                        if (response) {
+                          const mediaTypeObject = response.content;
+                          if (mediaTypeObject) {
+                            // @TODO: This is flaky, what if response has multiple media types?
+                            // @TODO: Add textual media types
+                            const jsonMediaType = maybe(mediaTypeObject['application/json']);
+                            if (jsonMediaType) {
+                              const schema = jsonMediaType.schema;
+                              if (!schema) {
+                                throw new Error(
+                                  `Unexpected situation, schema for response body of ${route} is missing`,
+                                );
+                              }
+                              const tsTypeExpression = await schemaToTsTypeExpression(
+                                project,
+                                schema,
+                                exportName,
+                                skipAdditionalProperties,
+                              	shouldSortFields,
+                              );
+                              operationProperties.push({
+                                name: 'response',
+                                type: tsTypeExpression,
+                                hasQuestionToken: false,
+                              });
+                            } else {
+                              operationProperties.push({ name: 'response', type: 'unknown' });
                             }
-                            const tsTypeExpression = await schemaToTsTypeExpression(
-                              project,
-                              schema,
-                              exportName,
-                              skipAdditionalProperties,
-                              shouldSortFields,
-                            );
-                            operationProperties.push({
-                              name: 'response',
-                              type: tsTypeExpression,
-                              hasQuestionToken: false,
-                            });
-                          } else {
-                            operationProperties.push({ name: 'response', type: 'ArrayBuffer' });
-                            operationProperties.push({
-                              name: 'responseType',
-                              type: (writer) => writer.quote('arraybuffer'),
-                            });
                           }
                         }
                       }

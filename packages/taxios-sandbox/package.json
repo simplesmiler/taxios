@@ -9,7 +9,8 @@
     "url": "git+ssh://git@github.com/simplesmiler/taxios.git"
   },
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start-client": "ts-node src/index.ts",
+    "start-server": "ts-node src/server.ts",
     "generate:petstore": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts https://petstore.swagger.io/v2/swagger.json -o ./src/generated/PetStore.ts -e PetStore",
     "generate:petstore3": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts https://petstore3.swagger.io/api/v3/openapi.json -o ./src/generated/PetStore3.ts -e PetStore3",
     "generate:named-enums": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/enums.yml -o ./src/generated/NamedEnums.ts -e NamedEnums",
@@ -18,7 +19,8 @@
     "generate:query-params": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/query-params.yml -o ./src/generated/QueryParams.ts -e QueryParams",
     "generate:skip-additional-properties": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/additional-properties.yml -o ./src/generated/SkipAdditionalProperties.ts -e SkipAdditionalProperties",
     "generate:keep-additional-properties": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/additional-properties.yml -o ./src/generated/KeepAdditionalProperties.ts -e KeepAdditionalProperties --keep-additional-properties",
-    "generate:sort-fields": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/sort-fields.yml -o ./src/generated/SortFields.ts -e SortFields --sort-fields"
+    "generate:sort-fields": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/sort-fields.yml -o ./src/generated/SortFields.ts -e SortFields --sort-fields",
+    "generate:multi-type": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/multi-type.yml -o ./src/generated/MultiType.ts -e MultiType"
   },
   "dependencies": {
     "@simplesmiler/taxios": "^0.2.0",
@@ -27,7 +29,16 @@
     "axios": "^0.21.1",
     "shx": "^0.3.3",
     "ts-node": "^10.2.1",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "koa": "^2.13.1",
+    "koa-body": "^4.2.0",
+    "koa-json": "^2.0.2",
+    "koa-router": "^10.0.0",
+    "@types/koa": "^2.13.4",
+    "@types/koa-router": "^7.4.4",
+    "web-streams-polyfill": "^3.1.0",
+    "@web-std/file": "^1.1.3",
+    "@web-std/form-data": "^2.1.1"
   },
   "bugs": {
     "url": "https://github.com/simplesmiler/taxios/issues"
