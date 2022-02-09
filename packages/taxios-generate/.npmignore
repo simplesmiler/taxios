@@ -1,3 +1,5 @@
 # Source files
 /src
 /tsconfig.build.json
+/index.test.js
+/jest.config.js
