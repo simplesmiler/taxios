@@ -1,4 +1,4 @@
-import { eraseRefObject, maybe, openApiMethods, parseToOpenApi, resolveRef, resolveRefArray } from './utils';
+import { Document, eraseRefObject, maybe, openApiMethods, parseToOpenApi, resolveRef, resolveRefArray } from './utils';
 import { ModuleDeclarationKind, OptionalKind, Project, PropertySignatureStructure, Writers } from 'ts-morph';
 import { cloneDeep, sortBy } from 'lodash';
 import { JSONSchema4, JSONSchema4Type } from 'json-schema';
@@ -206,9 +206,13 @@ async function schemaToTsTypeDeclaration(
   return tsTypeDeclaration;
 }
 
-interface GenerateProps {
+export interface GenerateProps {
   exportName: string;
-  inputPath: string;
+  /**
+   * A Swagger Object, or the file path or URL of your Swagger API.
+   * @see https://apitools.dev/swagger-parser/docs/swagger-parser.html#parseapi-options-callback
+   */
+  input: string | Document;
   outputPath?: string;
   skipValidate?: boolean;
   sortFields?: boolean;
@@ -218,7 +222,7 @@ interface GenerateProps {
 
 async function generate({
   exportName,
-  inputPath,
+  input,
   outputPath,
   skipValidate = false,
   sortFields = false,
@@ -230,7 +234,7 @@ async function generate({
   const skipAdditionalProperties = !keepAdditionalProperties;
   //
   // @SECTION: Setup
-  const [openApiParser, openApiDocument] = await parseToOpenApi(inputPath, { validate });
+  const [openApiParser, openApiDocument] = await parseToOpenApi(input, { validate });
   //
   const project = new Project({ useInMemoryFileSystem: true });
   const generatedFile = project.createSourceFile(`generated.ts`);

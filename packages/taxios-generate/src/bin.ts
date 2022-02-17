@@ -113,7 +113,7 @@ async function main(): Promise<number> {
   //
   await generate({
     exportName,
-    inputPath,
+    input: inputPath,
     outputPath,
     skipValidate: !validate,
     sortFields: shouldSortFields,

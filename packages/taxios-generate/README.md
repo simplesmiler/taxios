@@ -4,6 +4,8 @@
 
 ## Generate
 
+### CLI
+
 ```sh
 taxios-generate [options] <input-file-or-url>
 ```
@@ -18,12 +20,43 @@ Options:
       --sort-fields                 [0.2.10+] Sort fields in interfaces instead of keeping the order from source
 ```
 
+### As module (programmatically)
+
+```typescript
+export interface GenerateProps {
+  exportName: string;
+  input: string | OpenAPI.Document; // https://apitools.dev/swagger-parser/docs/swagger-parser.html#parseapi-options-callback
+  outputPath?: string;
+  skipValidate?: boolean;
+  sortFields?: boolean;
+  unionEnums?: boolean;
+  keepAdditionalProperties?: boolean;
+}
+
+export function generate(options: GenerateProps): Promise<string>;
+```
+
 ## Example
 
 Swagger: https://petstore.swagger.io/
 
+### CLI
+
 ```
 taxios-generate -o PetStore.ts -e PetStore https://petstore.swagger.io/v2/swagger.json
+```
+
+### As module (programmatically)
+
+```javascript
+import { generate } from '@simplesmiler/taxios-generate';
+// import taxiosGenerate from '@simplesmiler/taxios-generate';
+
+const result = await generate({
+  exportName: 'PetStore',
+  input: 'https://petstore.swagger.io/v2/swagger.json',
+  outputPath: path.resolve('./PetStore.ts'), // optional
+});
 ```
 
 Result: [PetStore.ts](https://github.com/simplesmiler/taxios/blob/master/packages/taxios-sandbox/src/generated/PetStore.ts)
