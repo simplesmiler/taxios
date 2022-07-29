@@ -224,7 +224,9 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
     ...args: InferredRequestArgs<TApi, 'GET', TRoute, TStrict>
   ): Promise<Response<TApi, 'GET', TRoute, TStrict>> {
     const [url, axiosConfig] = this.prepare('GET', route, ...args);
-    return await this.axios.get(url, axiosConfig).then((response) => response.data);
+    return await this.axios
+      .get(url, axiosConfig)
+      .then((response) => response.data as Response<TApi, 'GET', TRoute, TStrict>);
   }
 
   async head<TRoute extends AvailableRoutes<TApi, 'HEAD'>>(
@@ -240,7 +242,9 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
     ...args: InferredRequestArgs<TApi, 'HEAD', TRoute, TStrict>
   ): Promise<Response<TApi, 'HEAD', TRoute, TStrict>> {
     const [url, axiosConfig] = this.prepare('HEAD', route, ...args);
-    return await this.axios.head(url, axiosConfig).then((response) => response.data);
+    return await this.axios
+      .head(url, axiosConfig)
+      .then((response) => response.data as Response<TApi, 'HEAD', TRoute, TStrict>);
   }
 
   async post<TRoute extends AvailableRoutes<TApi, 'POST'>>(
@@ -260,7 +264,9 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
     const [body, config] = args;
     const prepareArgs = [config] as InferredUrlArgs<TApi, 'POST', TRoute, TStrict>;
     const [url, axiosConfig] = this.prepare('POST', route, ...prepareArgs);
-    return await this.axios.post(url, body, axiosConfig).then((response) => response.data);
+    return await this.axios
+      .post(url, body, axiosConfig)
+      .then((response) => response.data as Response<TApi, 'POST', TRoute, TStrict>);
   }
 
   async put<TRoute extends AvailableRoutes<TApi, 'PUT'>>(
@@ -280,7 +286,9 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
     const [body, config] = args;
     const prepareArgs = [config] as InferredUrlArgs<TApi, 'PUT', TRoute, TStrict>;
     const [url, axiosConfig] = this.prepare('PUT', route, ...prepareArgs);
-    return await this.axios.put(url, body, axiosConfig).then((response) => response.data);
+    return await this.axios
+      .put(url, body, axiosConfig)
+      .then((response) => response.data as Response<TApi, 'PUT', TRoute, TStrict>);
   }
 
   async delete<TRoute extends AvailableRoutes<TApi, 'DELETE'>>(
@@ -296,7 +304,9 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
     ...args: InferredRequestArgs<TApi, 'DELETE', TRoute, TStrict>
   ): Promise<Response<TApi, 'DELETE', TRoute, TStrict>> {
     const [url, axiosConfig] = this.prepare('DELETE', route, ...args);
-    return await this.axios.delete(url, axiosConfig).then((response) => response.data);
+    return await this.axios
+      .delete(url, axiosConfig)
+      .then((response) => response.data as Response<TApi, 'DELETE', TRoute, TStrict>);
   }
 
   async options<TRoute extends AvailableRoutes<TApi, 'OPTIONS'>>(
@@ -312,7 +322,9 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
     ...args: InferredRequestArgs<TApi, 'OPTIONS', TRoute, TStrict>
   ): Promise<Response<TApi, 'OPTIONS', TRoute, TStrict>> {
     const [url, axiosConfig] = this.prepare('OPTIONS', route, ...args);
-    return await this.axios.options(url, axiosConfig).then((response) => response.data);
+    return await this.axios
+      .options(url, axiosConfig)
+      .then((response) => response.data as Response<TApi, 'OPTIONS', TRoute, TStrict>);
   }
 
   async patch<TRoute extends AvailableRoutes<TApi, 'PATCH'>>(
@@ -332,6 +344,8 @@ export class Taxios<TApi extends Scheme, TStrict extends boolean = true> {
     const [body, config] = args;
     const prepareArgs = [config] as InferredUrlArgs<TApi, 'PATCH', TRoute, TStrict>;
     const [url, axiosConfig] = this.prepare('PATCH', route, ...prepareArgs);
-    return await this.axios.patch(url, body, axiosConfig).then((response) => response.data);
+    return await this.axios
+      .patch(url, body, axiosConfig)
+      .then((response) => response.data as Response<TApi, 'PATCH', TRoute, TStrict>);
   }
 }
