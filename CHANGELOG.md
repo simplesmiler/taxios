@@ -10,6 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `--skip-additional-properties` is the new default. Use `--keep-additional-properties` for old behaviour.
 - `--named-enums` is the new default. Use `--union-enums` for old behaviour.
 
+## 0.2.12
+### Changed
+- Relaxed axios peer dep to cover all future 0.x versions (closes #12, thanks to @crutch12).
+- Prepared for axios returning unknown
+  (see [axios#4141](https://github.com/axios/axios/issues/4141)
+  and [axios#3002](https://github.com/axios/axios/pull/3002))
+
+## 0.2.11
+### Added
+- `src` is now shipped to simplify debugging.
+
 ## 0.2.10
 ### Added
 - `--sort-fields` option.
