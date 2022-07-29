@@ -351,6 +351,9 @@ async function main(): Promise<number> {
     type: Writers.objectType({
       properties: await Promise.all(
         Object.entries(openApiDocument.paths).map(async ([route, pathItem]) => {
+          if (!pathItem) {
+            throw new Error(`Unexpected situation, pathItem of ${route} is missing`);
+          }
           const commonParameters = resolveRefArray(openApiParser, pathItem.parameters) || []; // @NOTE: Url fragment params
           return {
             name: JSON.stringify(route), // @NOTE: E.g. PetStore.Api['routes']['/users/{id}']
