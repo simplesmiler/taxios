@@ -21,7 +21,7 @@
   "dependencies": {
     "@simplesmiler/taxios": "^0.2.0",
     "@simplesmiler/taxios-generate": "^0.2.0",
-    "axios": "^0.21.1",
+    "axios": "^0.27.2",
     "shx": "^0.3.2",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.7"
