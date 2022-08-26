@@ -84,7 +84,7 @@ async function schemaToTsTypeExpression(
     sortFields(wrappedSchema);
   }
 
-  const rawTsWrappedInterface = await compile(wrappedSchema, 'Temp', { bannerComment: '' });
+  const rawTsWrappedInterface = await compile(wrappedSchema, 'Temp', { bannerComment: '', ignoreMinAndMaxItems: true });
 
   // @TODO: Use some different way to generate typescript types from json schema,
   //        because using temporary files is meh
@@ -150,7 +150,11 @@ async function schemaToTsTypeDeclaration(
     }
   }
 
-  const rawTsTypeDeclaration = await compile(schema, name, { bannerComment: '', enableConstEnums: false });
+  const rawTsTypeDeclaration = await compile(schema, name, {
+    bannerComment: '',
+    enableConstEnums: false,
+    ignoreMinAndMaxItems: true,
+  });
 
   // @NOTE: json-schema-to-typescript forcibly converts type names to CamelCase,
   //        so we have to convert them back to original casing if possible
