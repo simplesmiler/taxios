@@ -1,6 +1,6 @@
 // @REFERENCE: https://github.com/moroshko/interpolate-params
 
-const paramRegex = /{[a-zA-Z]+}/g;
+const paramRegex = /{[a-zA-Z_]+}/g;
 
 type InterpolationMap = (param: string, value: any) => any;
 
