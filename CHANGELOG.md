@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.2.13
+### Fixed
+- Path params with snake case now interpolate properly.
+
 ## 0.2.12
 ### Changed
 - Relaxed axios peer dep to cover all future 0.x versions (closes #12, thanks to @crutch12).
