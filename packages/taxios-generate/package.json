@@ -25,7 +25,7 @@
     "compile": "tsc -p tsconfig.build.json"
   },
   "dependencies": {
-    "@apidevtools/swagger-parser": "^10.0.1",
+    "@apidevtools/swagger-parser": "^10.1.0",
     "@types/mkdirp": "^1.0.1",
     "json-schema": "^0.2.5",
     "json-schema-to-typescript": "^9.1.1",
