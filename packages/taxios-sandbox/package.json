@@ -21,11 +21,11 @@
     "generate:sort-fields": "ts-node ../taxios-generate/src/bin.ts ./src/sort-fields.yml -o ./src/generated/SortFields.ts -e SortFields --sort-fields && prettier -w  -w ./src/generated/SortFields.ts"
   },
   "dependencies": {
-    "@types/node": "^16.7.1",
-    "axios": "^0.21.1",
-    "shx": "^0.3.3",
-    "ts-node": "^10.2.1",
-    "typescript": "^4.3.5"
+    "@types/node": "^18.11.18",
+    "axios": "^0.27.2",
+    "shx": "^0.3.4",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.4"
   },
   "bugs": {
     "url": "https://github.com/simplesmiler/taxios/issues"

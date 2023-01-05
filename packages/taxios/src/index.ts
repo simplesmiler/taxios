@@ -1,6 +1,6 @@
-import { AxiosInstance, AxiosResponse, AxiosRequestConfig, ResponseType } from 'axios';
+import type { AxiosInstance, AxiosResponse, AxiosRequestConfig, ResponseType } from 'axios';
 import qs from 'qs';
-import { ConditionalKeys, Opaque } from 'type-fest';
+import type { ConditionalKeys, Opaque } from 'type-fest';
 
 import { interpolateParams } from './interpolate-params';
 import urljoin from 'url-join';
@@ -49,7 +49,7 @@ type FieldLut<
   TApi extends Scheme,
   TMethod extends Method,
   TRoute extends AvailableRoutes<TApi, TMethod>,
-  TField extends Field
+  TField extends Field,
 > = TRoute extends keyof TApi['routes']
   ? TMethod extends keyof TApi['routes'][TRoute]
     ? TField extends keyof TApi['routes'][TRoute][TMethod]
@@ -61,7 +61,7 @@ type FieldLut<
 type RouteLut<
   TApi extends Scheme,
   TMethod extends Method,
-  TRoute extends AvailableRoutes<TApi, TMethod>
+  TRoute extends AvailableRoutes<TApi, TMethod>,
 > = TRoute extends keyof TApi['routes']
   ? TMethod extends keyof TApi['routes'][TRoute]
     ? TApi['routes'][TRoute][TMethod]
@@ -82,7 +82,7 @@ export type Response<
   TApi extends Scheme,
   TMethod extends Method,
   TRoute extends AvailableRoutes<TApi, TMethod>,
-  TStrict
+  TStrict,
 > = TStrict extends true ? EverOr<FieldLut<TApi, TMethod, TRoute, 'response'>, undefined> : any;
 
 type Url<TApi extends Scheme, TMethod extends Method, TRoute extends AvailableRoutes<TApi, TMethod>> = Opaque<
@@ -108,9 +108,11 @@ type LaxRequestConfig = LaxConfig & { axios?: AxiosRequestConfig };
 
 type InferredRouteArg<TRoute, TStrict> = TStrict extends true ? TRoute : TRoute | string;
 
-type RequestArgs<TApi extends Scheme, TMethod extends Method, TRoute extends AvailableRoutes<TApi, TMethod>> = HasBody<
-  TMethod
-> extends true
+type RequestArgs<
+  TApi extends Scheme,
+  TMethod extends Method,
+  TRoute extends AvailableRoutes<TApi, TMethod>,
+> = HasBody<TMethod> extends true
   ? HasRequiredProperties<Config<TApi, TMethod, TRoute>> extends true
     ? Parameters<(body: Body<TApi, TMethod, TRoute>, config: RequestConfig<TApi, TMethod, TRoute>) => void>
     : IsRequired<Body<TApi, TMethod, TRoute>> extends true
@@ -128,13 +130,13 @@ type InferredRequestArgs<
   TApi extends Scheme,
   TMethod extends Method,
   TRoute extends AvailableRoutes<TApi, TMethod>,
-  TStrict extends boolean
+  TStrict extends boolean,
 > = TStrict extends true ? RequestArgs<TApi, TMethod, TRoute> : LaxRequestArgs<TMethod>;
 
 type UrlArgs<
   TApi extends Scheme,
   TMethod extends Method,
-  TRoute extends AvailableRoutes<TApi, TMethod>
+  TRoute extends AvailableRoutes<TApi, TMethod>,
 > = HasRequiredProperties<Config<TApi, TMethod, TRoute>> extends true
   ? Parameters<(config: RequestConfig<TApi, TMethod, TRoute>) => void>
   : Parameters<(config?: RequestConfig<TApi, TMethod, TRoute>) => void>;
@@ -145,7 +147,7 @@ type InferredUrlArgs<
   TApi extends Scheme,
   TMethod extends Method,
   TRoute extends AvailableRoutes<TApi, TMethod>,
-  TStrict extends boolean
+  TStrict extends boolean,
 > = TStrict extends true ? UrlArgs<TApi, TMethod, TRoute> : LaxUrlArgs<TMethod>;
 
 export type TaxiosOptions = {
