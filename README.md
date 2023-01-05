@@ -36,7 +36,7 @@ const pet = await taxios.get('/pet/{petId}', { params: { petId: 1 } });
 ## Develop
 
 1. Clone repo
-2. `npm i`
+2. `npm ci`
 3. `npm run bootstrap`
 4. Change something in `taxios` or `taxios-generate` package
 5. Test by running scripts in `taxios-sandbox` packages
