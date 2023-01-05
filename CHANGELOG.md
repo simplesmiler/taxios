@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 0.2.14
 ### Added
-- `--ignore-min-max-items` option to work around crashes on arrays with large min-to-max items (#30, #33, thanks to @IRaccoonI). Also see [`0.3.0`](0.3.0), where this is fixed for good.
+- `--ignore-min-max-items` option to work around crashes on arrays with large min-to-max items (#30, #33, thanks to @IRaccoonI). Also see `0.3.0`, where this is fixed for good.
 
 ## 0.2.13
 ### Fixed
