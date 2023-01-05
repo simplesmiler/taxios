@@ -6,9 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 ### Breaking
-- TypeScript 4.3 is now required.
+- TypeScript 4.3 is now required (due to ts-morph 11+).
 - `--skip-additional-properties` is the new default. Use `--keep-additional-properties` for old behaviour.
 - `--named-enums` is the new default. Use `--union-enums` for old behaviour.
+### Changed
+- Lerna bumped to `^6.3.0`, switched to native npm workspaces.
+- `src` is now shipped with `taxios-generate` too.
 
 ## 0.2.12
 ### Changed
