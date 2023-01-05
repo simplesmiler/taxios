@@ -1,0 +1,27 @@
+openapi: 3.1.0
+info:
+  title: Nullable field in the style of OpenAPI 3.1
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /v1/test:
+    get:
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+        alias:
+          type:
+            - string
+            - 'null'
+      required:
+        - name
+        - alias
+      additionalProperties: false
