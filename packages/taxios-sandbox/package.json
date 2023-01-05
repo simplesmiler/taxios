@@ -10,19 +10,17 @@
   },
   "scripts": {
     "start": "ts-node src/index.ts",
-    "generate:petstore": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts https://petstore.swagger.io/v2/swagger.json -o ./src/generated/PetStore.ts -e PetStore",
-    "generate:petstore3": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts https://petstore3.swagger.io/api/v3/openapi.json -o ./src/generated/PetStore3.ts -e PetStore3",
-    "generate:named-enums": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/enums.yml -o ./src/generated/NamedEnums.ts -e NamedEnums",
-    "generate:union-enums": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/enums.yml -o ./src/generated/UnionEnums.ts -e UnionEnums --union-enums",
-    "generate:snake-case": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/snake-case.yml -o ./src/generated/snake_case.ts -e snake_case",
-    "generate:query-params": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/query-params.yml -o ./src/generated/QueryParams.ts -e QueryParams",
-    "generate:skip-additional-properties": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/additional-properties.yml -o ./src/generated/SkipAdditionalProperties.ts -e SkipAdditionalProperties",
-    "generate:keep-additional-properties": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/additional-properties.yml -o ./src/generated/KeepAdditionalProperties.ts -e KeepAdditionalProperties --keep-additional-properties",
-    "generate:sort-fields": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/sort-fields.yml -o ./src/generated/SortFields.ts -e SortFields --sort-fields"
+    "generate:petstore": "ts-node ../taxios-generate/src/bin.ts https://petstore.swagger.io/v2/swagger.json -o ./src/generated/PetStore.ts -e PetStore",
+    "generate:petstore3": "ts-node ../taxios-generate/src/bin.ts https://petstore3.swagger.io/api/v3/openapi.json -o ./src/generated/PetStore3.ts -e PetStore3",
+    "generate:named-enums": "ts-node ../taxios-generate/src/bin.ts ./src/enums.yml -o ./src/generated/NamedEnums.ts -e NamedEnums",
+    "generate:union-enums": "ts-node ../taxios-generate/src/bin.ts ./src/enums.yml -o ./src/generated/UnionEnums.ts -e UnionEnums --union-enums",
+    "generate:snake-case": "ts-node ../taxios-generate/src/bin.ts ./src/snake-case.yml -o ./src/generated/snake_case.ts -e snake_case",
+    "generate:query-params": "ts-node ../taxios-generate/src/bin.ts ./src/query-params.yml -o ./src/generated/QueryParams.ts -e QueryParams",
+    "generate:skip-additional-properties": "ts-node ../taxios-generate/src/bin.ts ./src/additional-properties.yml -o ./src/generated/SkipAdditionalProperties.ts -e SkipAdditionalProperties",
+    "generate:keep-additional-properties": "ts-node ../taxios-generate/src/bin.ts ./src/additional-properties.yml -o ./src/generated/KeepAdditionalProperties.ts -e KeepAdditionalProperties --keep-additional-properties",
+    "generate:sort-fields": "ts-node ../taxios-generate/src/bin.ts ./src/sort-fields.yml -o ./src/generated/SortFields.ts -e SortFields --sort-fields"
   },
   "dependencies": {
-    "@simplesmiler/taxios": "^0.2.0",
-    "@simplesmiler/taxios-generate": "^0.2.0",
     "@types/node": "^16.7.1",
     "axios": "^0.21.1",
     "shx": "^0.3.3",

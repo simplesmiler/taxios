@@ -16,6 +16,10 @@
   "license": "ISC",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist/**",
+    "src/**"
+  ],
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/simplesmiler/taxios.git"
