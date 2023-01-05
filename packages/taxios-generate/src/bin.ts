@@ -72,6 +72,7 @@ async function schemaToTsTypeExpression(
   rootNamespaceName: string,
   skipAdditionalProperties: boolean,
   shouldSortFields: boolean,
+  ignoreMinMaxItems: boolean,
 ): Promise<string> {
   // @NOTE: Wrap schema in object to force generator to produce type instead of interface
   const wrappedSchema = { type: 'object', properties: { target: cloneDeep(schema) } } as JSONSchema4;
@@ -84,7 +85,10 @@ async function schemaToTsTypeExpression(
     sortFields(wrappedSchema);
   }
 
-  const rawTsWrappedInterface = await compile(wrappedSchema, 'Temp', { bannerComment: '', ignoreMinAndMaxItems: true });
+  const rawTsWrappedInterface = await compile(wrappedSchema, 'Temp', {
+    bannerComment: '',
+    ignoreMinAndMaxItems: ignoreMinMaxItems,
+  });
 
   // @TODO: Use some different way to generate typescript types from json schema,
   //        because using temporary files is meh
@@ -109,6 +113,7 @@ async function schemaToTsTypeDeclaration(
   skipAdditionalProperties: boolean,
   namedEnums: boolean,
   shouldSortFields: boolean,
+  ignoreMinMaxItems: boolean,
 ): Promise<string> {
   replaceRefsWithTsTypes(schema, '#/components/schemas/', rootNamespaceName);
   trimTypeTitles(schema);
@@ -153,7 +158,7 @@ async function schemaToTsTypeDeclaration(
   const rawTsTypeDeclaration = await compile(schema, name, {
     bannerComment: '',
     enableConstEnums: false,
-    ignoreMinAndMaxItems: true,
+    ignoreMinAndMaxItems: ignoreMinMaxItems,
   });
 
   // @NOTE: json-schema-to-typescript forcibly converts type names to CamelCase,
@@ -228,10 +233,19 @@ async function main(): Promise<number> {
     'named-enums': boolean;
     'skip-additional-properties': boolean;
     'sort-fields': boolean;
+    'ignore-min-max-items': boolean;
   };
   const argv = minimist<Argv>(args, {
     string: ['out', 'export'],
-    boolean: ['skip-validation', 'named-enums', 'skip-additional-properties', 'sort-fields', 'help', 'version'],
+    boolean: [
+      'skip-validation',
+      'named-enums',
+      'skip-additional-properties',
+      'sort-fields',
+      'ignore-min-max-items',
+      'help',
+      'version',
+    ],
     alias: {
       out: ['o'],
       export: ['e'],
@@ -245,6 +259,7 @@ async function main(): Promise<number> {
       'named-enums': false,
       'skip-additional-properties': false,
       'sort-fields': false,
+      'ignore-min-max-items': false,
     },
   });
   if (argv.help) {
@@ -262,6 +277,7 @@ async function main(): Promise<number> {
         '      --named-enums                 Generate named enums instead of union types when possible',
         '      --skip-additional-properties  Skip generating`[k: string]: unknown` for objects, unless explicitly asked',
         '      --sort-fields                 Sort fields in interfaces instead of keeping the order from source',
+        '      --ignore-min-max-items        Ignore min and max items for arrays, preventing tuples being generated',
         '  -v, --version                     Print version',
       ].join('\n'),
     );
@@ -279,6 +295,7 @@ async function main(): Promise<number> {
   const namedEnums = argv['named-enums'];
   const skipAdditionalProperties = argv['skip-additional-properties'];
   const shouldSortFields = argv['sort-fields'];
+  const ignoreMinMaxItems = argv['ignore-min-max-items'];
   //
   if (!inputPath || argv._.length > 1) {
     console.error('You have to specify a single input file or url');
@@ -331,6 +348,7 @@ async function main(): Promise<number> {
           skipAdditionalProperties,
           namedEnums,
           shouldSortFields,
+          ignoreMinMaxItems,
         );
         targetNamespace.addStatements((writer) => {
           writer.write(tsTypeDeclaration);
@@ -388,6 +406,7 @@ async function main(): Promise<number> {
                           exportName,
                           skipAdditionalProperties,
                           shouldSortFields,
+                          ignoreMinMaxItems,
                         );
                         operationProperties.push({ name: 'body', type: tsTypeExpression, hasQuestionToken: !required });
                       } else if (formDataMediaType) {
@@ -417,6 +436,7 @@ async function main(): Promise<number> {
                           exportName,
                           skipAdditionalProperties,
                           shouldSortFields,
+                          ignoreMinMaxItems,
                         );
                         paramProperties.push({
                           name: parameter.name,
@@ -447,6 +467,7 @@ async function main(): Promise<number> {
                           exportName,
                           skipAdditionalProperties,
                           shouldSortFields,
+                          ignoreMinMaxItems,
                         );
                         paramProperties.push({
                           name: parameter.name,
@@ -484,6 +505,7 @@ async function main(): Promise<number> {
                               exportName,
                               skipAdditionalProperties,
                               shouldSortFields,
+                              ignoreMinMaxItems,
                             );
                             operationProperties.push({
                               name: 'response',

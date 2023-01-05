@@ -16,7 +16,9 @@
     "generate:snake-case": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/snake-case.yml -o ./src/generated/snake_case.ts -e snake_case --named-enums",
     "generate:query-params": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/query-params.yml -o ./src/generated/QueryParams.ts -e QueryParams",
     "generate:skip-additional-properties": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/skip-additional-properties.yml -o ./src/generated/SkipAdditionalProperties.ts -e SkipAdditionalProperties --skip-additional-properties",
-    "generate:sort-fields": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/sort-fields.yml -o ./src/generated/SortFields.ts -e SortFields --sort-fields"
+    "generate:sort-fields": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts ./src/sort-fields.yml -o ./src/generated/SortFields.ts -e SortFields --sort-fields",
+    "generate:ignore-min-max-items": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts src/min-max-items.yml -o src/generated/IgnoreMinMaxItems.ts -e MinMaxItems --ignore-min-max-items && prettier -w  -w src/generated/IgnoreMinMaxItems.ts",
+    "generate:respect-min-max-items": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts src/min-max-items.yml -o src/generated/RespectMinMaxItems.ts -e MinMaxItems && prettier -w  -w src/generated/RespectMinMaxItems.ts"
   },
   "dependencies": {
     "@simplesmiler/taxios": "^0.2.0",

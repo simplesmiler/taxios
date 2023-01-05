@@ -1,0 +1,35 @@
+openapi: 3.0.0
+info:
+  title: Array boundaries (min and max)
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /v1/roles:
+    get:
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    Tags:
+      type: array
+      description: List of tags, not to many
+      items:
+        type: string
+      minItems: 0
+      maxItems: 3
+    Bytes:
+      type: array
+      description: Sequence of bytes, can be empty
+      items:
+        type: integer
+      minItems: 0
+      maxItems: 2147483647 # (2^32) / 2 - 1
+    Emails:
+      type: array
+      description: List of emails, at least one
+      items:
+        type: string
+      minItems: 1
+      maxItems: 2147483647 # (2^32) / 2 - 1
