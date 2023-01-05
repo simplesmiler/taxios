@@ -3,6 +3,7 @@ import { Taxios } from '../../taxios/src';
 import { PetStore } from './generated/PetStore';
 import { QueryParams } from './generated/QueryParams';
 import { PetStore3 } from './generated/PetStore3';
+import { snake_case } from './generated/snake_case';
 
 async function main(): Promise<void> {
   {
@@ -64,6 +65,17 @@ async function main(): Promise<void> {
       qs: {
         encode: false,
       },
+    });
+    console.log(url);
+    console.log('');
+  }
+
+  {
+    console.log('# Testing snake_params');
+    const axios = Axios.create();
+    const taxios = new Taxios<snake_case>(axios);
+    const url = taxios.url('GET', '/v1/params/{snake_param}', {
+      params: { snake_param: 'snake_value' },
     });
     console.log(url);
     console.log('');

@@ -10,6 +10,17 @@ paths:
       responses:
         '200':
           description: OK
+  '/v1/params/{snake_param}':
+    get:
+      responses:
+        '200':
+          description: OK
+    parameters:
+      - schema:
+          type: string
+        name: snake_param
+        in: path
+        required: true
 components:
   schemas:
     'not a valid identifier':

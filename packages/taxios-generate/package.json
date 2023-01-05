@@ -1,6 +1,6 @@
 {
   "name": "@simplesmiler/taxios-generate",
-  "version": "0.2.8-alpha.0",
+  "version": "0.2.13",
   "description": "Typed wrapper around axios",
   "keywords": [
     "typescript",

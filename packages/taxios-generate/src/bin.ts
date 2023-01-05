@@ -386,8 +386,7 @@ async function main(): Promise<number> {
       properties: await Promise.all(
         Object.entries(openApiDocument.paths).map(async ([route, pathItem]) => {
           if (!pathItem) {
-            // @NOTE: This seems to be just a side effect of Object.entries with optional index signature,
-            //        so it should never happen in practice
+            // @NOTE: This should never happen in practice, because we are iterating over existing keys
             // @REFERENCE: https://github.com/kogosoftwarellc/open-api/pull/702
             throw new Error(`Unexpected situation, pathItem of ${route} is missing`);
           }

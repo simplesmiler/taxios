@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Lerna bumped to `^6.3.0`, switched to native npm workspaces.
 - `src` is now shipped with `taxios-generate` too.
 
+## 0.2.13
+### Fixed
+- Path params with snake case now interpolate properly.
+
 ## 0.2.12
 ### Changed
 - Relaxed axios peer dep to cover all future 0.x versions (closes #12, thanks to @crutch12).
