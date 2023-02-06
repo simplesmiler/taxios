@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 0.2.15
 ### Fixed
 - OpenAPI 3.1.0 is fully supported now.
+- Line endings in the built files are now forced to be LF instead of being platform dependent.
 
 ## 0.2.14
 ### Added
