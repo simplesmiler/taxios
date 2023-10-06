@@ -21,5 +21,12 @@ export interface snake_case {
     '/v1/test': {
       GET: {};
     };
+    '/v1/params/{snake_param}': {
+      GET: {
+        params: {
+          snake_param: string;
+        };
+      };
+    };
   };
 }

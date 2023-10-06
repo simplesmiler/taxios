@@ -6,9 +6,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 ### Breaking
-- TypeScript 4.3 is now required.
+- TypeScript 4.3 is now required (due to ts-morph 11+).
 - `--skip-additional-properties` is the new default. Use `--keep-additional-properties` for old behaviour.
 - `--named-enums` is the new default. Use `--union-enums` for old behaviour.
+### Changed
+- Lerna bumped to `^6.3.0`, switched to native npm workspaces.
+- `src` is now shipped with `taxios-generate` too.
+
+## 0.2.14
+### Added
+- `--ignore-min-max-items` option to work around crashes on arrays with large min-to-max items (#30, #33, thanks to @IRaccoonI). Also see `0.3.0`, where this is fixed for good.
+
+## 0.2.13
+### Fixed
+- Path params with snake case now interpolate properly.
+
+## 0.2.12
+### Changed
+- Relaxed axios peer dep to cover all future 0.x versions (closes #12, thanks to @crutch12).
+- Prepared for axios returning unknown
+  (see [axios#4141](https://github.com/axios/axios/issues/4141)
+  and [axios#3002](https://github.com/axios/axios/pull/3002))
+
+## 0.2.11
+### Added
+- `src` is now shipped to simplify debugging.
 
 ## 0.2.10
 ### Added

@@ -66,6 +66,7 @@ async function schemaToTsTypeExpression(
   rootNamespaceName: string,
   skipAdditionalProperties: boolean,
   shouldSortFields: boolean,
+  ignoreMinMaxItems: boolean,
 ): Promise<string> {
   // @NOTE: Wrap schema in object to force generator to produce type instead of interface
   const wrappedSchema = { type: 'object', properties: { target: cloneDeep(schema) } } as JSONSchema4;
@@ -78,7 +79,10 @@ async function schemaToTsTypeExpression(
     sortFields(wrappedSchema);
   }
 
-  const rawTsWrappedInterface = await compile(wrappedSchema, 'Temp', { bannerComment: '' });
+  const rawTsWrappedInterface = await compile(wrappedSchema, 'Temp', {
+    bannerComment: '',
+    ignoreMinAndMaxItems: ignoreMinMaxItems,
+  });
 
   // @TODO: Use some different way to generate typescript types from json schema,
   //        because using temporary files is meh
@@ -136,6 +140,7 @@ async function schemaToTsTypeDeclaration(
   skipAdditionalProperties: boolean,
   namedEnums: boolean,
   shouldSortFields: boolean,
+  ignoreMinMaxItems: boolean,
 ): Promise<string> {
   replaceRefsWithTsTypes(schema, '#/components/schemas/', rootNamespaceName);
   trimTypeTitles(schema);
@@ -177,7 +182,11 @@ async function schemaToTsTypeDeclaration(
     }
   }
 
-  const rawTsTypeDeclaration = await compile(schema, name, { bannerComment: '', enableConstEnums: false });
+  const rawTsTypeDeclaration = await compile(schema, name, {
+    bannerComment: '',
+    enableConstEnums: false,
+    ignoreMinAndMaxItems: ignoreMinMaxItems,
+  });
 
   // @NOTE: json-schema-to-typescript forcibly converts type names to CamelCase,
   //        so we have to convert them back to original casing if possible
@@ -218,6 +227,7 @@ export interface GenerateProps {
   sortFields?: boolean;
   unionEnums?: boolean;
   keepAdditionalProperties?: boolean;
+  ignoreMinMaxItems?: boolean;
 }
 
 async function generate({
@@ -228,6 +238,7 @@ async function generate({
   sortFields = false,
   unionEnums = false,
   keepAdditionalProperties = false,
+  ignoreMinMaxItems = false,
 }: GenerateProps) {
   const validate = !skipValidate;
   const namedEnums = !unionEnums;
@@ -280,6 +291,7 @@ async function generate({
           skipAdditionalProperties,
           namedEnums,
           sortFields,
+          ignoreMinMaxItems,
         );
         targetNamespace.addStatements((writer) => {
           writer.write(tsTypeDeclaration);
@@ -305,8 +317,7 @@ async function generate({
       properties: await Promise.all(
         Object.entries(openApiDocument.paths).map(async ([route, pathItem]) => {
           if (!pathItem) {
-            // @NOTE: This seems to be just a side effect of Object.entries with optional index signature,
-            //        so it should never happen in practice
+            // @NOTE: This should never happen in practice, because we are iterating over existing keys
             // @REFERENCE: https://github.com/kogosoftwarellc/open-api/pull/702
             throw new Error(`Unexpected situation, pathItem of ${route} is missing`);
           }
@@ -340,6 +351,7 @@ async function generate({
                           exportName,
                           skipAdditionalProperties,
                           sortFields,
+                          ignoreMinMaxItems,
                         );
                         operationProperties.push({ name: 'body', type: tsTypeExpression, hasQuestionToken: !required });
                       } else if (formDataMediaType) {
@@ -369,6 +381,7 @@ async function generate({
                           exportName,
                           skipAdditionalProperties,
                           sortFields,
+                          ignoreMinMaxItems,
                         );
                         paramProperties.push({
                           name: parameter.name,
@@ -399,6 +412,7 @@ async function generate({
                           exportName,
                           skipAdditionalProperties,
                           sortFields,
+                          ignoreMinMaxItems,
                         );
                         paramProperties.push({
                           name: parameter.name,
@@ -436,6 +450,7 @@ async function generate({
                               exportName,
                               skipAdditionalProperties,
                               sortFields,
+                              ignoreMinMaxItems,
                             );
                             operationProperties.push({
                               name: 'response',

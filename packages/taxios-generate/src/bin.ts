@@ -21,6 +21,7 @@ async function main(): Promise<number> {
     'skip-additional-properties': boolean;
     'keep-additional-properties': boolean;
     'sort-fields': boolean;
+    'ignore-min-max-items': boolean;
   };
   const argv = minimist<Argv>(args, {
     string: ['out', 'export'],
@@ -31,6 +32,7 @@ async function main(): Promise<number> {
       'skip-additional-properties',
       'keep-additional-properties',
       'sort-fields',
+      'ignore-min-max-items',
       'help',
       'version',
     ],
@@ -49,6 +51,7 @@ async function main(): Promise<number> {
       'skip-additional-properties': false,
       'keep-additional-properties': false,
       'sort-fields': false,
+      'ignore-min-max-items': false,
     },
   });
   if (argv.help) {
@@ -66,6 +69,7 @@ async function main(): Promise<number> {
         '      --union-enums                 Generate union enums instead of named enums when possible',
         '      --keep-additional-properties  Generate`[k: string]: unknown` for objects, unless explicitly asked',
         '      --sort-fields                 Sort fields in interfaces instead of keeping the order from source',
+        '      --ignore-min-max-items        Ignore min and max items for arrays, preventing tuples being generated',
         '  -v, --version                     Print version',
       ].join('\n'),
     );
@@ -81,6 +85,7 @@ async function main(): Promise<number> {
   const outputPath = argv.out;
   const validate = !argv['skip-validation'];
   const shouldSortFields = argv['sort-fields'];
+  const ignoreMinMaxItems = argv['ignore-min-max-items'];
 
   const namedEnums = !argv['union-enums'];
   if (argv['named-enums']) {
@@ -119,6 +124,7 @@ async function main(): Promise<number> {
     sortFields: shouldSortFields,
     unionEnums: !namedEnums,
     keepAdditionalProperties: !skipAdditionalProperties,
+    ignoreMinMaxItems,
   });
 
   //

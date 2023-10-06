@@ -104,13 +104,6 @@ export interface PetStore {
         };
       };
     };
-    '/store/inventory': {
-      GET: {
-        response: {
-          [k: string]: number;
-        };
-      };
-    };
     '/store/order': {
       POST: {
         body: PetStore.Order;
@@ -128,6 +121,18 @@ export interface PetStore {
         params: {
           orderId: number;
         };
+      };
+    };
+    '/store/inventory': {
+      GET: {
+        response: {
+          [k: string]: number;
+        };
+      };
+    };
+    '/user/createWithArray': {
+      POST: {
+        body: PetStore.User[];
       };
     };
     '/user/createWithList': {
@@ -165,11 +170,6 @@ export interface PetStore {
     };
     '/user/logout': {
       GET: {};
-    };
-    '/user/createWithArray': {
-      POST: {
-        body: PetStore.User[];
-      };
     };
     '/user': {
       POST: {

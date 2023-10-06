@@ -18,6 +18,7 @@ Options:
       --named-enums                 [0.2.4+] Generate named enums instead of union types when possible
       --skip-additional-properties  [0.2.5+] Skip generating`[k: string]: unknown` for objects, unless explicitly asked
       --sort-fields                 [0.2.10+] Sort fields in interfaces instead of keeping the order from source
+      --ignore-min-max-items        [0.2.14+] Ignore min and max items for arrays, preventing tuples being generated
 ```
 
 ### As module (programmatically)
@@ -31,6 +32,7 @@ export interface GenerateProps {
   sortFields?: boolean;
   unionEnums?: boolean;
   keepAdditionalProperties?: boolean;
+  ignoreMinMaxItems?: boolean;
 }
 
 export function generate(options: GenerateProps): Promise<string>;

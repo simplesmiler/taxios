@@ -1,6 +1,6 @@
 {
   "name": "@simplesmiler/taxios",
-  "version": "0.2.8-alpha.0",
+  "version": "0.2.13",
   "description": "Typed wrapper around axios",
   "keywords": [
     "typescript",
@@ -16,6 +16,10 @@
   "license": "ISC",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist/**",
+    "src/**"
+  ],
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/simplesmiler/taxios.git"
@@ -28,18 +32,18 @@
   "dependencies": {
     "@types/qs": "^6.9.7",
     "@types/url-join": "^4.0.1",
-    "qs": "^6.10.1",
-    "type-fest": "^2.1.0",
+    "qs": "^6.11.0",
+    "type-fest": "^3.5.1",
     "url-join": "^4.0.1"
   },
   "peerDependencies": {
     "axios": ">=0.19 <1.0.0"
   },
   "devDependencies": {
-    "@types/node": "^16.7.1",
-    "axios": "^0.21.1",
-    "shx": "^0.3.3",
-    "typescript": "^4.3.5"
+    "@types/node": "^18.11.18",
+    "axios": "^0.27.2",
+    "shx": "^0.3.4",
+    "typescript": "^4.9.4"
   },
   "bugs": {
     "url": "https://github.com/simplesmiler/taxios/issues"
