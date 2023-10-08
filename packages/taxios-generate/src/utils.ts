@@ -125,7 +125,7 @@ export function resolveRefObject<T>(
 
 type ParseResult = [SwaggerParser, OpenApiDocument];
 
-export async function parseToOpenApi(api: string, opts: { validate: boolean }): Promise<ParseResult> {
+export async function parseToOpenApi(api: string | Document, opts: { validate: boolean }): Promise<ParseResult> {
   const preparser = new SwaggerParser();
   const preparsedDocument = await preparser.parse(api);
   //
