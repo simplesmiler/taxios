@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Lerna bumped to `^6.3.0`, switched to native npm workspaces.
 - `src` is now shipped with `taxios-generate` too.
 
+## 0.2.15
+### Fixed
+- OpenAPI 3.1.0 is fully supported now.
+- Line endings in the built files are now forced to be LF instead of being platform dependent.
+
 ## 0.2.14
 ### Added
 - `--ignore-min-max-items` option to work around crashes on arrays with large min-to-max items (#30, #33, thanks to @IRaccoonI). Also see `0.3.0`, where this is fixed for good.

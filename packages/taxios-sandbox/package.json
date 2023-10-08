@@ -20,7 +20,8 @@
     "generate:keep-additional-properties": "ts-node ../taxios-generate/src/bin.ts ./src/additional-properties.yml -o ./src/generated/KeepAdditionalProperties.ts -e KeepAdditionalProperties --keep-additional-properties && prettier -w ./src/generated/KeepAdditionalProperties.ts",
     "generate:sort-fields": "ts-node ../taxios-generate/src/bin.ts ./src/sort-fields.yml -o ./src/generated/SortFields.ts -e SortFields --sort-fields && prettier -w  -w ./src/generated/SortFields.ts",
     "generate:ignore-min-max-items": "ts-node ../taxios-generate/src/bin.ts src/min-max-items.yml -o src/generated/IgnoreMinMaxItems.ts -e MinMaxItems --ignore-min-max-items && prettier -w src/generated/IgnoreMinMaxItems.ts",
-    "generate:respect-min-max-items": "ts-node ../taxios-generate/src/bin.ts src/min-max-items.yml -o src/generated/RespectMinMaxItems.ts -e MinMaxItems && prettier -w src/generated/RespectMinMaxItems.ts"
+    "generate:respect-min-max-items": "ts-node ../taxios-generate/src/bin.ts src/min-max-items.yml -o src/generated/RespectMinMaxItems.ts -e MinMaxItems && prettier -w src/generated/RespectMinMaxItems.ts",
+    "generate:openapi-3.1": "ts-node ./node_modules/@simplesmiler/taxios-generate/src/bin.ts src/openapi-3.1.yml -o src/generated/OpenAPI31.ts -e OpenAPI31"
   },
   "dependencies": {
     "@types/node": "^18.11.18",
