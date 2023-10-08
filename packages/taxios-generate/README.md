@@ -48,7 +48,7 @@ Swagger: https://petstore.swagger.io/
 taxios-generate -o PetStore.ts -e PetStore https://petstore.swagger.io/v2/swagger.json
 ```
 
-### As module (programmatically)
+### [0.3.0] As module (programmatically)
 
 ```javascript
 import { generate } from '@simplesmiler/taxios-generate';

@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 0.3.0-alpha.0
+### Added
+- Programmatic generation ([taxios#26](https://github.com/simplesmiler/taxios/pull/26), kudos @crutch12)
 ### Breaking
 - TypeScript 4.3 is now required (due to ts-morph 11+).
 - `--skip-additional-properties` is the new default. Use `--keep-additional-properties` for old behaviour.
