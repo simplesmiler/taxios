@@ -1,9 +1,4 @@
 export namespace PetStore {
-  export interface ApiResponse {
-    code?: number;
-    type?: string;
-    message?: string;
-  }
   export interface Category {
     id?: number;
     name?: string;
@@ -22,6 +17,11 @@ export namespace PetStore {
   export interface Tag {
     id?: number;
     name?: string;
+  }
+  export interface ApiResponse {
+    code?: number;
+    type?: string;
+    message?: string;
   }
   export interface Order {
     id?: number;
@@ -52,6 +52,25 @@ export namespace PetStore {
 export interface PetStore {
   version: '1';
   routes: {
+    '/pet/{petId}': {
+      GET: {
+        params: {
+          petId: number;
+        };
+        response: PetStore.Pet;
+      };
+      POST: {
+        body?: FormData;
+        params: {
+          petId: number;
+        };
+      };
+      DELETE: {
+        params: {
+          petId: number;
+        };
+      };
+    };
     '/pet/{petId}/uploadImage': {
       POST: {
         body?: FormData;
@@ -85,29 +104,11 @@ export interface PetStore {
         response: PetStore.Pet[];
       };
     };
-    '/pet/{petId}': {
+    '/store/inventory': {
       GET: {
-        params: {
-          petId: number;
+        response: {
+          [k: string]: number;
         };
-        response: PetStore.Pet;
-      };
-      POST: {
-        body?: FormData;
-        params: {
-          petId: number;
-        };
-      };
-      DELETE: {
-        params: {
-          petId: number;
-        };
-      };
-    };
-    '/store/order': {
-      POST: {
-        body: PetStore.Order;
-        response: PetStore.Order;
       };
     };
     '/store/order/{orderId}': {
@@ -123,21 +124,10 @@ export interface PetStore {
         };
       };
     };
-    '/store/inventory': {
-      GET: {
-        response: {
-          [k: string]: number;
-        };
-      };
-    };
-    '/user/createWithArray': {
+    '/store/order': {
       POST: {
-        body: PetStore.User[];
-      };
-    };
-    '/user/createWithList': {
-      POST: {
-        body: PetStore.User[];
+        body: PetStore.Order;
+        response: PetStore.Order;
       };
     };
     '/user/{username}': {
@@ -159,6 +149,21 @@ export interface PetStore {
         };
       };
     };
+    '/user': {
+      POST: {
+        body: PetStore.User;
+      };
+    };
+    '/user/createWithArray': {
+      POST: {
+        body: PetStore.User[];
+      };
+    };
+    '/user/createWithList': {
+      POST: {
+        body: PetStore.User[];
+      };
+    };
     '/user/login': {
       GET: {
         query: {
@@ -170,11 +175,6 @@ export interface PetStore {
     };
     '/user/logout': {
       GET: {};
-    };
-    '/user': {
-      POST: {
-        body: PetStore.User;
-      };
     };
   };
 }
