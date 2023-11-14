@@ -1,4 +1,13 @@
-import { Document, eraseRefObject, maybe, openApiMethods, parseToOpenApi, resolveRef, resolveRefArray } from './utils';
+import {
+  Document,
+  eraseRefObject,
+  maybe,
+  OpenApiDocument,
+  openApiMethods,
+  parseToOpenApi,
+  resolveRef,
+  resolveRefArray,
+} from './utils';
 import { ModuleDeclarationKind, OptionalKind, Project, PropertySignatureStructure, Writers } from 'ts-morph';
 import { cloneDeep, sortBy } from 'lodash';
 import { JSONSchema4, JSONSchema4Type } from 'json-schema';
@@ -8,6 +17,7 @@ import { promises as outerFs } from 'fs';
 import { compile } from 'json-schema-to-typescript';
 import { toSafeString } from 'json-schema-to-typescript/dist/src/utils';
 import traverse from 'json-schema-traverse';
+import { openapiSchemaToJsonSchema } from '@openapi-contrib/openapi-schema-to-json-schema';
 
 function replaceRefsWithTsTypes(tree: JSONSchema4, prefix: string, rootNamespaceName: string): void {
   traverse(tree, (node: JSONSchema4) => {
@@ -61,6 +71,7 @@ function trimTypeTitles(tree: JSONSchema4): void {
 
 // @TODO: Cover with tests
 async function schemaToTsTypeExpression(
+  document: OpenApiDocument,
   project: Project,
   schema: JSONSchema4,
   rootNamespaceName: string,
@@ -69,7 +80,7 @@ async function schemaToTsTypeExpression(
   ignoreMinMaxItems: boolean,
 ): Promise<string> {
   // @NOTE: Wrap schema in object to force generator to produce type instead of interface
-  const wrappedSchema = { type: 'object', properties: { target: cloneDeep(schema) } } as JSONSchema4;
+  let wrappedSchema = { type: 'object', properties: { target: cloneDeep(schema) } } as JSONSchema4;
   replaceRefsWithTsTypes(wrappedSchema, '#/components/schemas/', rootNamespaceName);
   trimTypeTitles(wrappedSchema);
   if (skipAdditionalProperties) {
@@ -77,6 +88,9 @@ async function schemaToTsTypeExpression(
   }
   if (shouldSortFields) {
     sortFields(wrappedSchema);
+  }
+  if (document.openapi.startsWith('3.0.')) {
+    wrappedSchema = openapiSchemaToJsonSchema(wrappedSchema);
   }
 
   const rawTsWrappedInterface = await compile(wrappedSchema, 'Temp', {
@@ -132,6 +146,7 @@ function parseEnumNameCandidates(
 
 // @TODO: Cover with tests
 async function schemaToTsTypeDeclaration(
+  document: OpenApiDocument,
   project: Project,
   schema: JSONSchema4,
   path: string,
@@ -180,6 +195,9 @@ async function schemaToTsTypeDeclaration(
         console.warn(`Warning: Enum ${path} will be generated as union type because no valid names are available`);
       }
     }
+  }
+  if (document.openapi.startsWith('3.0.')) {
+    schema = openapiSchemaToJsonSchema(schema);
   }
 
   const rawTsTypeDeclaration = await compile(schema, name, {
@@ -283,6 +301,7 @@ async function generate({
 
         const jsonSchema = cloneDeep(schema) as JSONSchema4;
         const tsTypeDeclaration = await schemaToTsTypeDeclaration(
+          openApiDocument,
           project,
           jsonSchema,
           path,
@@ -346,6 +365,7 @@ async function generate({
                           throw new Error(`Unexpected situation, schema for request body of ${route} is missing`);
                         }
                         const tsTypeExpression = await schemaToTsTypeExpression(
+                          openApiDocument,
                           project,
                           schema,
                           exportName,
@@ -376,6 +396,7 @@ async function generate({
                           );
                         }
                         const tsTypeExpression = await schemaToTsTypeExpression(
+                          openApiDocument,
                           project,
                           schema,
                           exportName,
@@ -407,6 +428,7 @@ async function generate({
                           );
                         }
                         const tsTypeExpression = await schemaToTsTypeExpression(
+                          openApiDocument,
                           project,
                           schema,
                           exportName,
@@ -445,6 +467,7 @@ async function generate({
                               throw new Error(`Unexpected situation, schema for response body of ${route} is missing`);
                             }
                             const tsTypeExpression = await schemaToTsTypeExpression(
+                              openApiDocument,
                               project,
                               schema,
                               exportName,

@@ -39,6 +39,7 @@
     "lodash": "^4.17.21",
     "minimist": "^1.2.7",
     "mkdirp": "^1.0.4",
+    "@openapi-contrib/openapi-schema-to-json-schema": "^5.1.0",
     "openapi-types": "^12.1.0",
     "swagger2openapi": "^7.0.8",
     "ts-morph": "^17.0.1"
