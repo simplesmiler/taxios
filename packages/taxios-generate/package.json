@@ -1,6 +1,6 @@
 {
   "name": "@simplesmiler/taxios-generate",
-  "version": "0.3.0-alpha.0",
+  "version": "0.3.0-alpha.1",
   "description": "Typed wrapper around axios",
   "keywords": [
     "typescript",
@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^10.1.0",
+    "@openapi-contrib/openapi-schema-to-json-schema": "^5.1.0",
     "@types/mkdirp": "^1.0.2",
     "json-schema": "^0.4.0",
     "json-schema-to-typescript": "^11.0.2",
@@ -39,7 +40,6 @@
     "lodash": "^4.17.21",
     "minimist": "^1.2.7",
     "mkdirp": "^1.0.4",
-    "@openapi-contrib/openapi-schema-to-json-schema": "^5.1.0",
     "openapi-types": "^12.1.0",
     "swagger2openapi": "^7.0.8",
     "ts-morph": "^17.0.1"
